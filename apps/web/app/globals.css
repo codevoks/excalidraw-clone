@@ -1,0 +1,100 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #000000;
+  --color-foreground: #e7e9ea;
+  --color-foreground-muted: #71767b;
+  --color-surface: #0f0f10;
+  --color-surface-2: #1a1d21;
+  --color-border: #2f3336;
+  --color-primary: #e7e9ea;
+  --color-primary-hover: #ffffff;
+  --color-secondary: #272c30;
+  --color-secondary-hover: #32383d;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  background-image: none;
+}
+
+* {
+  border-color: var(--color-border);
+}
+
+button,
+a,
+[role="button"] {
+  cursor: pointer;
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: -0.02em;
+}
+
+@layer components {
+  .btn-base {
+    @apply inline-flex items-center justify-center rounded-md border text-sm font-medium transition-colors;
+    border-color: var(--color-border);
+    height: 2.5rem;
+    padding: 0 1rem;
+  }
+
+  .btn-primary {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #0f1419;
+  }
+
+  .btn-primary:hover {
+    background-color: var(--color-primary-hover);
+  }
+
+  .btn-secondary {
+    background-color: var(--color-secondary);
+    border-color: var(--color-secondary);
+    color: var(--color-foreground);
+  }
+
+  .btn-secondary:hover {
+    background-color: var(--color-secondary-hover);
+  }
+
+  .btn-tertiary {
+    background-color: var(--color-surface);
+    color: var(--color-foreground);
+  }
+
+  .btn-tertiary:hover {
+    background-color: var(--color-surface-2);
+  }
+
+  .card-shell {
+    border: 1px solid var(--color-border);
+    background-color: var(--color-surface);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+  }
+
+  .input-shell {
+    width: 100%;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-surface-2);
+    border-radius: 0.5rem;
+    padding: 0.6rem 0.75rem;
+    color: var(--color-foreground);
+  }
+
+  .input-shell::placeholder {
+    color: var(--color-foreground-muted);
+  }
+}

@@ -1,0 +1,27 @@
+# Dependencies & caches
+node_modules
+.pnpm-store
+.turbo
+
+# Next
+**/.next
+**/out
+
+# Env & secrets
+.env
+.env.*
+!.env.example
+
+# Git & IDE
+.git
+.github
+*.md
+!README.md
+
+# Test & misc
+coverage
+.DS_Store
+*.log
+
+# Turbo prune output (local experiments)
+out
