@@ -2,10 +2,8 @@
  * Prisma entrypoint — `pnpm db:seed` from repo root, or `pnpm prisma:seed` in this package.
  * Implement logic in `src/seed/index.ts` (`runSeed`).
  */
-import { PrismaClient } from "@prisma/client";
 import { runSeed } from "../src/seed/index";
-
-const prisma = new PrismaClient();
+import { db as prisma } from "../src/client";
 
 async function main() {
   await runSeed(prisma);

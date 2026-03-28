@@ -4,7 +4,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -13,4 +12,47 @@ model User {
   passwordHash String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  roomMembers  RoomMember[]
+  roomEvents   RoomEvent[]
+}
+
+model Room {
+  id          Int @id @default(autoincrement())
+  slug        String @unique
+  createdAt   DateTime @default(now())
+  roomMembers  RoomMember[]
+  roomEvents   RoomEvent[]
+  roomSnapshots RoomSnapshot[]
+}
+
+model RoomMember {
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  room        Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  userId      Int
+  roomId      Int
+  joinedAt    DateTime @default(now())
+  @@id([roomId, userId])
+}
+
+model RoomEvent {
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  room        Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  roomId      Int
+  userId      Int
+  seq         Int
+  type        String
+  payload     Json
+  createdAt   DateTime @default(now())
+  @@index([roomId, seq])
+  @@id([roomId, seq])
+}
+
+model RoomSnapshot {
+  id          Int @id @default(autoincrement())
+  room        Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  roomId      Int
+  version     Int
+  state       Json
+  createdAt   DateTime @default(now())
+  @@unique([roomId, version])
 }
