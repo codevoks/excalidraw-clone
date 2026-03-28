@@ -127,7 +127,12 @@ export function Button({
   const classes = [variantClass[variant], className].filter(Boolean).join(" ");
 
   return (
-    <button type={type} className={classes} disabled={isDisabled} onClick={handleClick}>
+    <button
+      type={type}
+      className={classes}
+      disabled={isDisabled}
+      onClick={handleClick}
+    >
       {busy ? busyLabel : children}
     </button>
   );
