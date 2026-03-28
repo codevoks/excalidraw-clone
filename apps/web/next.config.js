@@ -1,7 +1,11 @@
+import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Next only auto-loads `.env*` from `apps/web`; shared secrets live at repo root.
+dotenv.config({ path: path.join(__dirname, "../../.env") });
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
