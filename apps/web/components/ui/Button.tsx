@@ -14,7 +14,7 @@ const variantClass = {
 
 export type ButtonApiConfig = {
   method: "get" | "post" | "put" | "patch" | "delete";
-  /** Path under `/api`, e.g. `/auth/signout` */
+  /** Path under `/api`, e.g. `/v1/logout` */
   path: string;
   data?: unknown;
   params?: Record<string, unknown>;

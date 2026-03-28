@@ -19,7 +19,7 @@ export function AppBar() {
     let mounted = true;
     const loadSession = async () => {
       try {
-        await getRequest({ path: "/auth/me", data: {} });
+        await getRequest({ path: "/v1/me", data: {} });
         if (!mounted) return;
         setSession({ isAuthenticated: true, loading: false });
       } catch {

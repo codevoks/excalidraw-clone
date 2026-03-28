@@ -13,10 +13,10 @@ Production-ready Turborepo starter with `pnpm`, Next.js app router auth flows, P
 
 ## Implemented auth flows
 
-- `POST /api/auth/signup`
-- `POST /api/auth/signin`
-- `POST /api/auth/signout`
-- `GET /api/auth/me`
+- `POST /api/v1/signup`
+- `POST /api/v1/login`
+- `POST /api/v1/logout`
+- `GET /api/v1/me`
 - Cookie-based JWT session (`auth_token`)
 - Middleware protection for `/dashboard`
 

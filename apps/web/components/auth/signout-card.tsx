@@ -20,7 +20,7 @@ export function SignOutCard() {
           variant="tertiary"
           className="h-12 w-full"
           busyLabel="Signing out…"
-          api={{ method: "post", path: "/auth/signout", data: {} }}
+          api={{ method: "post", path: "/v1/logout", data: {} }}
           navigateTo="/home"
           refreshAfterNavigate
           onRequestStart={() => setError(null)}

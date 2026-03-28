@@ -20,7 +20,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
       ? "Welcome back. Enter your credentials to continue."
       : "Use your email and password to create an account.";
 
-  const path = mode === "signin" ? "/auth/signin" : "/auth/signup";
+  const path = mode === "signin" ? "/v1/login" : "/v1/signup";
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

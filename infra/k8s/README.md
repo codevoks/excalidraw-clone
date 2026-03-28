@@ -7,4 +7,4 @@ Add manifests or Helm values when you deploy to a cluster:
 - `Secret` / external secrets operator for `DATABASE_URL`, `JWT_SECRET`  
 - Optional: `HorizontalPodAutoscaler`, PDBs  
 
-Health: wire readiness/liveness to `GET /api/auth/me` or a dedicated `/health` route once you add it.
+Health: wire readiness/liveness to `GET /api/v1/me` or a dedicated `/health` route once you add it.

@@ -25,7 +25,7 @@ Always test:
 
 - Sign up
 - Sign in
-- `/api/auth/me`
+- `/api/v1/me`
 - Sign out
 - Dashboard route protection (`/dashboard`)
 
