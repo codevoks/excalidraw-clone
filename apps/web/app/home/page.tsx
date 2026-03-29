@@ -9,8 +9,9 @@ export default function HomePage() {
             Build fast. Ship better.
           </h1>
           <p className="max-w-2xl text-base leading-relaxed text-foreground-muted sm:text-lg">
-            Turborepo starter with auth routes, Prisma user model, Zod validation and
-            middleware protection. Focus on product logic, not setup repetition.
+            Turborepo starter with auth routes, Prisma user model, Zod
+            validation and middleware protection. Focus on product logic, not
+            setup repetition.
           </p>
 
           <div className="flex flex-wrap items-center gap-3">
@@ -31,7 +32,7 @@ export default function HomePage() {
         <div className="card-shell space-y-3">
           <h3 className="text-xl font-semibold">Auth APIs included</h3>
           <p className="text-sm text-foreground-muted">
-              Sign in, sign up, sign out and me endpoints are production-ready.
+            Sign in, sign up, sign out and me endpoints are production-ready.
           </p>
           <p className="text-sm leading-relaxed text-foreground-muted">
             Cookie JWT flow with secure defaults and clean route handlers.
@@ -41,17 +42,19 @@ export default function HomePage() {
         <div className="card-shell space-y-3">
           <h3 className="text-xl font-semibold">Protected dashboard</h3>
           <p className="text-sm text-foreground-muted">
-              Middleware gate keeps private routes and auto-redirects guests.
+            Middleware gate keeps private routes and auto-redirects guests.
           </p>
           <p className="text-sm leading-relaxed text-foreground-muted">
-            Strong starting point for role-based routes and app-level authorization.
+            Strong starting point for role-based routes and app-level
+            authorization.
           </p>
         </div>
 
         <div className="card-shell space-y-3">
           <h3 className="text-xl font-semibold">Monorepo by default</h3>
           <p className="text-sm text-foreground-muted">
-              Shared packages for auth, db, validation and ui with clean boundaries.
+            Shared packages for auth, db, validation and ui with clean
+            boundaries.
           </p>
           <p className="text-sm leading-relaxed text-foreground-muted">
             Add new apps or packages without copy-paste chaos.

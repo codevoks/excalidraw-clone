@@ -4,7 +4,9 @@ export default function SignInPage() {
   return (
     <section className="space-y-6">
       <div className="mx-auto w-full max-w-md px-1">
-        <p className="text-sm uppercase tracking-[0.18em] text-foreground-muted">Authentication</p>
+        <p className="text-sm uppercase tracking-[0.18em] text-foreground-muted">
+          Authentication
+        </p>
       </div>
       <AuthForm mode="signin" />
     </section>

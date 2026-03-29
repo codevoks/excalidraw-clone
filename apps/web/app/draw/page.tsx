@@ -1,9 +1,9 @@
-"use client";
 import { Canvas } from "../../components/canvas/Canvas";
-export default function Draw() {
+
+export default function DrawPage() {
   return (
-    <div>
-      <Canvas height={500} width={500}></Canvas>
+    <div className="flex min-h-0 flex-1 flex-col">
+      <Canvas />
     </div>
   );
 }
