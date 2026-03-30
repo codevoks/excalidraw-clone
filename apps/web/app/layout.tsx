@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Manrope, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { AppBar } from "../components/layout/app-bar";
-import { Footer } from "../components/layout/footer";
+import { ConditionalFooter } from "../components/layout/conditional-footer";
 
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-sans" });
 const playfair = Playfair_Display({
@@ -30,7 +30,7 @@ export default function RootLayout({
           <main className="mx-auto flex min-h-0 w-full max-w-6xl flex-1 flex-col px-4 pb-20 pt-24 sm:px-6 lg:px-8">
             {children}
           </main>
-          <Footer />
+          <ConditionalFooter />
         </div>
       </body>
     </html>
