@@ -54,33 +54,33 @@ export function Canvas() {
   };
 
   const pointerUp = (event: React.PointerEvent<HTMLCanvasElement>) => {
-    // const canvas = canvasRef.current;
-    // if (!canvas || !draggStart.current) {
-    //   return;
-    // }
-    // const ctx = canvas.getContext("2d");
-    // const rect = canvas.getBoundingClientRect();
-    // const scaleX = canvas.width / rect.width;
-    // const scaleY = canvas.height / rect.height;
-    // const canvasX = (event.clientX - rect.left) * scaleX;
-    // const canvasY = (event.clientY - rect.top) * scaleY;
-    // dragging.current = false;
-    // draggEnd.current = {
-    //   x: canvasX,
-    //   y: canvasY,
-    // };
-    // const sx = draggStart.current.x;
-    // const sy = draggStart.current.y;
-    // const ex = draggEnd.current.x;
-    // const ey = draggEnd.current.y;
-    // const x = Math.min(sx, ex);
-    // const y = Math.min(sy, ey);
-    // const w = Math.abs(ex - sx);
-    // const h = Math.abs(ey - sy);
-    // ctx?.clearRect(0, 0, canvas.width, canvas.height);
-    // ctx?.strokeRect(x, y, w, h);
-    // draggStart.current = null;
-    // draggEnd.current = null;
+    const canvas = canvasRef.current;
+    if (!canvas || !draggStart.current) {
+      return;
+    }
+    const ctx = canvas.getContext("2d");
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const canvasX = (event.clientX - rect.left) * scaleX;
+    const canvasY = (event.clientY - rect.top) * scaleY;
+    dragging.current = false;
+    draggEnd.current = {
+      x: canvasX,
+      y: canvasY,
+    };
+    const sx = draggStart.current.x;
+    const sy = draggStart.current.y;
+    const ex = draggEnd.current.x;
+    const ey = draggEnd.current.y;
+    const x = Math.min(sx, ex);
+    const y = Math.min(sy, ey);
+    const w = Math.abs(ex - sx);
+    const h = Math.abs(ey - sy);
+    ctx?.clearRect(0, 0, canvas.width, canvas.height);
+    ctx?.strokeRect(x, y, w, h);
+    draggStart.current = null;
+    draggEnd.current = null;
   };
 
   const pointerMove = (event: React.PointerEvent<HTMLCanvasElement>) => {
