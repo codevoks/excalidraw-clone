@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 
 interface draggposition {
   x: number;
@@ -29,28 +29,8 @@ export function Canvas() {
     }
   };
 
-  //   useEffect(() => {
-  //     if (canvasRef.current) {
-  //       const ctx = canvasRef.current.getContext("2d");
-  //       ctx?.strokeRect(200, 200, 40, 50);
-  //     }
-  //   }, []);
-
-  // const handleClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
-  //   const canvas = canvasRef.current;
-  //   if (!canvas) {
-  //     return;
-  //   }
-  //   const ctx = canvas.getContext("2d");
-  //   const rect = canvas.getBoundingClientRect();
-  //   const scaleX = canvas.width / rect.width;
-  //   const scaleY = canvas.height / rect.height;
-  //   const canvasX = (event.clientX - rect.left) * scaleX;
-  //   const canvasY = (event.clientY - rect.top) * scaleY;
-  //   ctx?.strokeRect(canvasX, canvasY, 50, 50);
-  // };
-
   const pointerDown = (event: React.PointerEvent<HTMLCanvasElement>) => {
+    event.currentTarget.setPointerCapture(event.pointerId);
     const canvas = canvasRef.current;
     if (!canvas) {
       return;
@@ -133,7 +113,6 @@ export function Canvas() {
         className="h-full w-full bg-slate-800"
         height={600}
         width={400}
-        // onClick={handleClick}
         onPointerDown={pointerDown}
         onPointerMove={pointerMove}
         onPointerUp={pointerUp}
