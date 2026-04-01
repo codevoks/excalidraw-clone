@@ -13,6 +13,21 @@ export function Canvas() {
   const draggEnd = useRef<draggposition | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const rectangles = useRef<
+    Array<{ x: number; y: number; w: number; h: number }>
+  >([]);
+
+  const redraw = () => {
+    const canvas = canvasRef.current;
+    if (!rectangles || !canvas) {
+      return;
+    }
+    const ctx = canvas.getContext("2d");
+    ctx?.clearRect(0, 0, canvas.width, canvas.height);
+    for (const rectangle of rectangles.current) {
+      ctx?.strokeRect(rectangle.x, rectangle.y, rectangle.w, rectangle.h);
+    }
+  };
 
   //   useEffect(() => {
   //     if (canvasRef.current) {
@@ -77,8 +92,9 @@ export function Canvas() {
     const y = Math.min(sy, ey);
     const w = Math.abs(ex - sx);
     const h = Math.abs(ey - sy);
-    ctx?.clearRect(0, 0, canvas.width, canvas.height);
+    redraw();
     ctx?.strokeRect(x, y, w, h);
+    rectangles.current.push({ x, y, w, h });
     draggStart.current = null;
     draggEnd.current = null;
   };
@@ -106,7 +122,7 @@ export function Canvas() {
     const y = Math.min(sy, ey);
     const w = Math.abs(ex - sx);
     const h = Math.abs(ey - sy);
-    ctx?.clearRect(0, 0, canvas.width, canvas.height);
+    redraw();
     ctx?.strokeRect(x, y, w, h);
   };
 
