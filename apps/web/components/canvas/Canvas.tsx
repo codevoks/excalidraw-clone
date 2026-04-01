@@ -2,7 +2,15 @@
 
 import { useEffect, useRef } from "react";
 
+interface draggposition {
+  x: number;
+  y: number;
+}
+
 export function Canvas() {
+  const dragging = useRef(false);
+  const draggStart = useRef<draggposition | null>(null);
+  const draggEnd = useRef<draggposition | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -13,17 +21,93 @@ export function Canvas() {
   //     }
   //   }, []);
 
-  const handleClick = (event: MouseEvent) => {
+  // const handleClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
+  //   const canvas = canvasRef.current;
+  //   if (!canvas) {
+  //     return;
+  //   }
+  //   const ctx = canvas.getContext("2d");
+  //   const rect = canvas.getBoundingClientRect();
+  //   const scaleX = canvas.width / rect.width;
+  //   const scaleY = canvas.height / rect.height;
+  //   const canvasX = (event.clientX - rect.left) * scaleX;
+  //   const canvasY = (event.clientY - rect.top) * scaleY;
+  //   ctx?.strokeRect(canvasX, canvasY, 50, 50);
+  // };
+
+  const pointerDown = (event: React.PointerEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
-    if (canvas) {
-      const ctx = canvas.getContext("2d");
-      const rect = canvas.getBoundingClientRect();
-      const scaleX = canvas.width / rect.width;
-      const scaleY = canvas.height / rect.height;
-      const canvasX = (event.clientX - rect.left) * scaleX;
-      const canvasY = (event.clientY - rect.top) * scaleY;
-      ctx?.strokeRect(canvasX, canvasY, 50, 50);
+    if (!canvas) {
+      return;
     }
+    const ctx = canvas.getContext("2d");
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const canvasX = (event.clientX - rect.left) * scaleX;
+    const canvasY = (event.clientY - rect.top) * scaleY;
+    dragging.current = true;
+    draggStart.current = {
+      x: canvasX,
+      y: canvasY,
+    };
+  };
+
+  const pointerUp = (event: React.PointerEvent<HTMLCanvasElement>) => {
+    // const canvas = canvasRef.current;
+    // if (!canvas || !draggStart.current) {
+    //   return;
+    // }
+    // const ctx = canvas.getContext("2d");
+    // const rect = canvas.getBoundingClientRect();
+    // const scaleX = canvas.width / rect.width;
+    // const scaleY = canvas.height / rect.height;
+    // const canvasX = (event.clientX - rect.left) * scaleX;
+    // const canvasY = (event.clientY - rect.top) * scaleY;
+    // dragging.current = false;
+    // draggEnd.current = {
+    //   x: canvasX,
+    //   y: canvasY,
+    // };
+    // const sx = draggStart.current.x;
+    // const sy = draggStart.current.y;
+    // const ex = draggEnd.current.x;
+    // const ey = draggEnd.current.y;
+    // const x = Math.min(sx, ex);
+    // const y = Math.min(sy, ey);
+    // const w = Math.abs(ex - sx);
+    // const h = Math.abs(ey - sy);
+    // ctx?.clearRect(0, 0, canvas.width, canvas.height);
+    // ctx?.strokeRect(x, y, w, h);
+    // draggStart.current = null;
+    // draggEnd.current = null;
+  };
+
+  const pointerMove = (event: React.PointerEvent<HTMLCanvasElement>) => {
+    // const canvas = canvasRef.current;
+    // if (!canvas || !dragging.current || !draggStart.current) {
+    //   return;
+    // }
+    // const ctx = canvas.getContext("2d");
+    // const rect = canvas.getBoundingClientRect();
+    // const scaleX = canvas.width / rect.width;
+    // const scaleY = canvas.height / rect.height;
+    // const canvasX = (event.clientX - rect.left) * scaleX;
+    // const canvasY = (event.clientY - rect.top) * scaleY;
+    // draggEnd.current = {
+    //   x: canvasX,
+    //   y: canvasY,
+    // };
+    // const sx = draggStart.current.x;
+    // const sy = draggStart.current.y;
+    // const ex = draggEnd.current.x;
+    // const ey = draggEnd.current.y;
+    // const x = Math.min(sx, ex);
+    // const y = Math.min(sy, ey);
+    // const w = Math.abs(ex - sx);
+    // const h = Math.abs(ey - sy);
+    // ctx?.clearRect(0, 0, canvas.width, canvas.height);
+    // ctx?.strokeRect(x, y, w, h);
   };
 
   return (
@@ -33,7 +117,10 @@ export function Canvas() {
         className="h-full w-full bg-slate-800"
         height={600}
         width={400}
-        onClick={handleClick}
+        // onClick={handleClick}
+        onPointerDown={pointerDown}
+        onPointerMove={pointerMove}
+        onPointerUp={pointerUp}
       />
     </div>
   );
