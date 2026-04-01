@@ -35,7 +35,6 @@ export function Canvas() {
     if (!canvas) {
       return;
     }
-    const ctx = canvas.getContext("2d");
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
