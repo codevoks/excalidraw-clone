@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import { pointerToCanvas } from "./helper/helper";
 
 interface draggposition {
   x: number;
@@ -14,7 +15,7 @@ export function Canvas() {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rectangles = useRef<
-    Array<{ x: number; y: number; w: number; h: number }>
+    Array<{ left: number; top: number; w: number; h: number }>
   >([]);
 
   const redraw = () => {
@@ -25,7 +26,7 @@ export function Canvas() {
     const ctx = canvas.getContext("2d");
     ctx?.clearRect(0, 0, canvas.width, canvas.height);
     for (const rectangle of rectangles.current) {
-      ctx?.strokeRect(rectangle.x, rectangle.y, rectangle.w, rectangle.h);
+      ctx?.strokeRect(rectangle.left, rectangle.top, rectangle.w, rectangle.h);
     }
   };
 
@@ -35,15 +36,14 @@ export function Canvas() {
     if (!canvas) {
       return;
     }
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    const canvasX = (event.clientX - rect.left) * scaleX;
-    const canvasY = (event.clientY - rect.top) * scaleY;
+    const { x, y } = pointerToCanvas(canvas, event.clientX, event.clientY);
+    if (!x || !y) {
+      return;
+    }
     dragging.current = true;
     draggStart.current = {
-      x: canvasX,
-      y: canvasY,
+      x,
+      y,
     };
   };
 
@@ -53,27 +53,26 @@ export function Canvas() {
       return;
     }
     const ctx = canvas.getContext("2d");
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    const canvasX = (event.clientX - rect.left) * scaleX;
-    const canvasY = (event.clientY - rect.top) * scaleY;
+    const { x, y } = pointerToCanvas(canvas, event.clientX, event.clientY);
+    if (!x || !y) {
+      return;
+    }
     dragging.current = false;
     draggEnd.current = {
-      x: canvasX,
-      y: canvasY,
+      x,
+      y,
     };
     const sx = draggStart.current.x;
     const sy = draggStart.current.y;
     const ex = draggEnd.current.x;
     const ey = draggEnd.current.y;
-    const x = Math.min(sx, ex);
-    const y = Math.min(sy, ey);
+    const left = Math.min(sx, ex);
+    const top = Math.min(sy, ey);
     const w = Math.abs(ex - sx);
     const h = Math.abs(ey - sy);
     redraw();
-    ctx?.strokeRect(x, y, w, h);
-    rectangles.current.push({ x, y, w, h });
+    ctx?.strokeRect(left, top, w, h);
+    rectangles.current.push({ left, top, w, h });
     draggStart.current = null;
     draggEnd.current = null;
   };
@@ -84,21 +83,20 @@ export function Canvas() {
       return;
     }
     const ctx = canvas.getContext("2d");
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    const canvasX = (event.clientX - rect.left) * scaleX;
-    const canvasY = (event.clientY - rect.top) * scaleY;
+    const { x, y } = pointerToCanvas(canvas, event.clientX, event.clientY);
+    if (!x || !y) {
+      return;
+    }
     draggEnd.current = {
-      x: canvasX,
-      y: canvasY,
+      x,
+      y,
     };
     const sx = draggStart.current.x;
     const sy = draggStart.current.y;
     const ex = draggEnd.current.x;
     const ey = draggEnd.current.y;
-    const x = Math.min(sx, ex);
-    const y = Math.min(sy, ey);
+    const top = Math.min(sx, ex);
+    const left = Math.min(sy, ey);
     const w = Math.abs(ex - sx);
     const h = Math.abs(ey - sy);
     redraw();
