@@ -10,5 +10,7 @@ export function shapeFromDrag(
 ) {
   if (type === SHAPES_NAMES.RECTANGLE) {
     return rectangleShapeFromDrag(start, end);
+  } else {
+    throw new Error("Unknown shape type");
   }
 }
