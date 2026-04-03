@@ -14,3 +14,9 @@ export function shapeFromDrag(
     throw new Error("Unknown shape type");
   }
 }
+
+export function checkShape(data: unknown) {
+  if (!data || typeof data !== "object" || !("type" in data)) {
+    return;
+  }
+}

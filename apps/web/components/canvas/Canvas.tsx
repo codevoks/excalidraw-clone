@@ -12,16 +12,35 @@ export function Canvas({ selectedShape }: { selectedShape: SHAPES_NAMES }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const shapes = useRef<Array<Shape>>([]);
 
-  const [messages, setMessages] = useState<string[]>([]);
+  const [messages, setMessages] = useState<Shape[]>([]);
   const [ws, setWs] = useState<WebSocket>();
 
   useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) {
+      return;
+    }
+    const context = canvas.getContext("2d");
     const websocket = new WebSocket("ws://localhost:8080");
     setWs(websocket);
 
     websocket.onopen = () => console.log("Connected to WebSocket server");
     websocket.onmessage = (event) => {
-      setMessages((prevMessages) => [...prevMessages, event.data]);
+      let newShape = null;
+      try {
+        newShape = JSON.parse(event.data);
+      } catch (error) {
+        console.log("Error parsing event.data " + error);
+      }
+      if (newShape === null) {
+        return;
+      }
+      setMessages((prevMessages) => [...prevMessages, newShape]);
+      shapes.current.push(newShape);
+      if (!context) {
+        return;
+      }
+      paintScene(context, shapes.current);
     };
     websocket.onclose = () => console.log("Disconnected from WebSocket server");
 
