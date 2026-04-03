@@ -3,8 +3,7 @@
 import { useRef } from "react";
 import { pointerToCanvas, PointType } from "./shapes/point";
 import { paintScene } from "./render/paintScene";
-import { rectangleShapeFromDrag } from "./shapes/rectangle";
-import { SHAPES_NAMES, Shape } from "./shapes/shape";
+import { SHAPES_NAMES, Shape, shapeFromDrag } from "./shapes/shape";
 
 export function Canvas() {
   const dragging = useRef(false);
@@ -42,7 +41,11 @@ export function Canvas() {
       y,
     };
     shapes.current.push(
-      rectangleShapeFromDrag(draggStart.current, draggEnd.current),
+      shapeFromDrag(
+        SHAPES_NAMES.RECTANGLE,
+        draggStart.current,
+        draggEnd.current,
+      ),
     );
     paintScene(context, shapes.current);
     draggStart.current = null;
@@ -67,7 +70,11 @@ export function Canvas() {
     paintScene(
       context,
       shapes.current,
-      rectangleShapeFromDrag(draggStart.current, draggEnd.current),
+      shapeFromDrag(
+        SHAPES_NAMES.RECTANGLE,
+        draggStart.current,
+        draggEnd.current,
+      ),
     );
   };
 
