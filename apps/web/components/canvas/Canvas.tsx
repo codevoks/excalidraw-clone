@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { pointerToCanvas, PointType } from "./shapes/point";
 import { paintScene } from "./render/paintScene";
-import { SHAPES_NAMES, Shape, shapeFromDrag } from "./shapes/shape";
+import { SHAPES_NAMES, Shape, ShapeType, shapeFromDrag } from "./shapes/shape";
 
 export function Canvas() {
   const dragging = useRef(false);
@@ -11,6 +11,7 @@ export function Canvas() {
   const draggEnd = useRef<PointType | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const shapes = useRef<Array<Shape>>([]);
+  const selectedShape = useRef<ShapeType>(SHAPES_NAMES.RECTANGLE);
 
   const pointerDown = (event: React.PointerEvent<HTMLCanvasElement>) => {
     event.currentTarget.setPointerCapture(event.pointerId);
@@ -42,7 +43,7 @@ export function Canvas() {
     };
     shapes.current.push(
       shapeFromDrag(
-        SHAPES_NAMES.RECTANGLE,
+        selectedShape.current,
         draggStart.current,
         draggEnd.current,
       ),
@@ -71,7 +72,7 @@ export function Canvas() {
       context,
       shapes.current,
       shapeFromDrag(
-        SHAPES_NAMES.RECTANGLE,
+        selectedShape.current,
         draggStart.current,
         draggEnd.current,
       ),
