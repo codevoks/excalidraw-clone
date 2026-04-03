@@ -82,16 +82,12 @@ export function Canvas() {
       x,
       y,
     };
-    const sx = draggStart.current.x;
-    const sy = draggStart.current.y;
-    const ex = draggEnd.current.x;
-    const ey = draggEnd.current.y;
-    const left = Math.min(sx, ex);
-    const top = Math.min(sy, ey);
-    const w = Math.abs(ex - sx);
-    const h = Math.abs(ey - sy);
+    const { left, top, width, height } = rectFromDrag(
+      { x: draggStart.current.x, y: draggStart.current.y },
+      { x: draggEnd.current.x, y: draggEnd.current.y },
+    );
     redraw();
-    ctx?.strokeRect(left, top, w, h);
+    ctx?.strokeRect(left, top, width, height);
   };
 
   return (
