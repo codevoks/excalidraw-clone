@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { pointerToCanvas, PointType } from "./shapes/point";
 import { paintScene } from "./render/paintScene";
 import { SHAPES_NAMES, Shape, shapeFromDrag } from "./shapes/shape";
@@ -11,6 +11,22 @@ export function Canvas({ selectedShape }: { selectedShape: SHAPES_NAMES }) {
   const draggEnd = useRef<PointType | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const shapes = useRef<Array<Shape>>([]);
+
+  const [messages, setMessages] = useState<string[]>([]);
+  const [ws, setWs] = useState<WebSocket>();
+
+  useEffect(() => {
+    const websocket = new WebSocket("ws://localhost:8080");
+    setWs(websocket);
+
+    websocket.onopen = () => console.log("Connected to WebSocket server");
+    websocket.onmessage = (event) => {
+      setMessages((prevMessages) => [...prevMessages, event.data]);
+    };
+    websocket.onclose = () => console.log("Disconnected from WebSocket server");
+
+    return () => websocket.close();
+  }, []);
 
   const pointerDown = (event: React.PointerEvent<HTMLCanvasElement>) => {
     event.currentTarget.setPointerCapture(event.pointerId);
@@ -47,6 +63,7 @@ export function Canvas({ selectedShape }: { selectedShape: SHAPES_NAMES }) {
     draggStart.current = null;
     draggEnd.current = null;
     dragging.current = false;
+    ws?.send("TEST FOR WS");
   };
 
   const pointerMove = (event: React.PointerEvent<HTMLCanvasElement>) => {
