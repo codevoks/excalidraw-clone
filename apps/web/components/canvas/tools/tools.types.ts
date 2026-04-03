@@ -2,7 +2,7 @@ import { SHAPES_NAMES } from "../shapes/shape";
 
 type ToolBarEntryType = {
   name: SHAPES_NAMES;
-  icon: string;
+  label: string;
   selected: boolean;
 };
 
