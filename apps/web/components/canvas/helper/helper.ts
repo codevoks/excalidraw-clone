@@ -1,3 +1,6 @@
+import { PointType } from "../shapes/point";
+import { RectangleType } from "../shapes/rectangle";
+
 export function pointerToCanvas(
   canvas: HTMLCanvasElement,
   clientX: number,
@@ -12,4 +15,16 @@ export function pointerToCanvas(
   const canvasX = (clientX - rect.left) * scaleX;
   const canvasY = (clientY - rect.top) * scaleY;
   return { x: canvasX, y: canvasY };
+}
+
+export function rectFromDrag(start: PointType, end: PointType) {
+  const sx = start.x;
+  const sy = start.y;
+  const ex = end.x;
+  const ey = end.y;
+  const left = Math.min(sx, ex);
+  const top = Math.min(sy, ey);
+  const width = Math.abs(ex - sx);
+  const height = Math.abs(ey - sy);
+  return { left, top, width, height };
 }
