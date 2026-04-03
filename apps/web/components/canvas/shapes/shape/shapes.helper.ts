@@ -1,0 +1,12 @@
+import { PointType } from "../point";
+import { SHAPES_NAMES } from "./shapes.config";
+import { ShapeType } from "./shapes.types";
+
+export function shapeFromDrag(
+  type: ShapeType,
+  start: PointType,
+  end: PointType,
+) {
+  if (type === SHAPES_NAMES.RECTANGLE) {
+  }
+}

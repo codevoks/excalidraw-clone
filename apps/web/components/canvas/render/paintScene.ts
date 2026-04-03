@@ -1,4 +1,4 @@
-import { Shape } from "../shapes/shapes.types";
+import { Shape } from "../shapes/shape/shapes.types";
 import { paintShape } from "./paintShape";
 
 export function paintScene(

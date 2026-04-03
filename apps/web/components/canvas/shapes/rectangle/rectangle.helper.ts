@@ -1,5 +1,6 @@
 import { PointType } from "../point";
-import { Shape } from "../shapes.types";
+import { SHAPES_NAMES } from "../shape";
+import { Shape } from "../shape/shapes.types";
 import { RectangleType } from "./rectangle.types";
 
 export function rectangleShapeFromDrag(
@@ -14,7 +15,7 @@ export function rectangleShapeFromDrag(
   const top = Math.min(sy, ey);
   const width = Math.abs(ex - sx);
   const height = Math.abs(ey - sy);
-  return { type: "rectangle", left, top, width, height };
+  return { type: SHAPES_NAMES.RECTANGLE, left, top, width, height };
 }
 
 export function paintRectangleDragPreview(
