@@ -17,12 +17,15 @@ wss.on("connection", function connection(ws) {
   ws.on("error", console.error);
 
   ws.on("message", function message(data) {
-    console.log("received: %s", data);
-    wss.clients.forEach(function each(client) {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(data);
-      }
-    });
+    try {
+      const incomingMessage = typeof data === "string" ? data : data.toString();
+      console.log("received: %s", incomingMessage);
+      wss.clients.forEach(function each(client) {
+        if (client.readyState === WebSocket.OPEN) {
+          client.send(data.toString());
+        }
+      });
+    } catch (error) {}
   });
 
   ws.send("something");

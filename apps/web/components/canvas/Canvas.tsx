@@ -56,14 +56,17 @@ export function Canvas({ selectedShape }: { selectedShape: SHAPES_NAMES }) {
       x,
       y,
     };
-    shapes.current.push(
-      shapeFromDrag(selectedShape, draggStart.current, draggEnd.current),
+    const currentShape = shapeFromDrag(
+      selectedShape,
+      draggStart.current,
+      draggEnd.current,
     );
+    shapes.current.push(currentShape);
     paintScene(context, shapes.current);
     draggStart.current = null;
     draggEnd.current = null;
     dragging.current = false;
-    ws?.send("TEST FOR WS");
+    ws?.send(JSON.stringify(currentShape));
   };
 
   const pointerMove = (event: React.PointerEvent<HTMLCanvasElement>) => {
