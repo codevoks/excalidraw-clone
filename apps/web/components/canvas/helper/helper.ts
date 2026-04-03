@@ -4,7 +4,7 @@ export function pointerToCanvas(
   clientY: number,
 ) {
   if (!canvas) {
-    return { x: null, y: null };
+    return { x: 0, y: 0 };
   }
   const rect = canvas.getBoundingClientRect();
   const scaleX = canvas.width / rect.width;

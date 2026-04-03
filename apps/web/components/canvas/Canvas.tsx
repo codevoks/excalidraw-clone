@@ -37,9 +37,6 @@ export function Canvas() {
       return;
     }
     const { x, y } = pointerToCanvas(canvas, event.clientX, event.clientY);
-    if (!x || !y) {
-      return;
-    }
     dragging.current = true;
     draggStart.current = {
       x,
@@ -54,9 +51,6 @@ export function Canvas() {
     }
     const ctx = canvas.getContext("2d");
     const { x, y } = pointerToCanvas(canvas, event.clientX, event.clientY);
-    if (!x || !y) {
-      return;
-    }
     dragging.current = false;
     draggEnd.current = {
       x,
@@ -84,9 +78,6 @@ export function Canvas() {
     }
     const ctx = canvas.getContext("2d");
     const { x, y } = pointerToCanvas(canvas, event.clientX, event.clientY);
-    if (!x || !y) {
-      return;
-    }
     draggEnd.current = {
       x,
       y,
@@ -95,12 +86,12 @@ export function Canvas() {
     const sy = draggStart.current.y;
     const ex = draggEnd.current.x;
     const ey = draggEnd.current.y;
-    const top = Math.min(sx, ex);
-    const left = Math.min(sy, ey);
+    const left = Math.min(sx, ex);
+    const top = Math.min(sy, ey);
     const w = Math.abs(ex - sx);
     const h = Math.abs(ey - sy);
     redraw();
-    ctx?.strokeRect(x, y, w, h);
+    ctx?.strokeRect(left, top, w, h);
   };
 
   return (
