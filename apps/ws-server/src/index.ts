@@ -25,7 +25,9 @@ wss.on("connection", function connection(ws) {
           client.send(incomingMessage);
         }
       });
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   });
 
   ws.send("something");
