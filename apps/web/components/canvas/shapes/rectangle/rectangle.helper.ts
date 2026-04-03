@@ -1,4 +1,4 @@
-import { PointType } from "../point";
+import { PointType, pointerToCanvas } from "../point";
 import { RectangleType } from "./rectangle.types";
 
 export function rectFromDrag(start: PointType, end: PointType) {
@@ -44,4 +44,4 @@ export function paintRectangles(
   }
 }
 
-export function rectangleDragTool(start: PointType | null, dragging: boolean) {}
+export function renderFrame() {}
