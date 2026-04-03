@@ -6,8 +6,12 @@ type ToolBarEntryType = {
   selected: boolean;
 };
 
-export type ToolBarEntryProp = { entry: ToolBarEntryType };
+export type ToolBarEntryProp = {
+  entry: ToolBarEntryType;
+  onClick: (shape: SHAPES_NAMES) => void;
+};
 
-export type ToolBarType = {
+export type ToolBarProps = {
   selectedShape: SHAPES_NAMES;
+  setShape: (shape: SHAPES_NAMES) => void;
 };

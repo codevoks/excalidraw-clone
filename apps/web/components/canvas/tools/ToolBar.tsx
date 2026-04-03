@@ -1,8 +1,8 @@
 import { ToolBarEntry } from "./ToolBarEntry";
 import { tools } from "./tools.config";
-import { ToolBarType } from "./tools.types";
+import { ToolBarProps } from "./tools.types";
 
-export function ToolBar({ selectedShape }: ToolBarType) {
+export function ToolBar({ selectedShape, setShape }: ToolBarProps) {
   return (
     <div>
       {tools.map((tool) => {
@@ -11,7 +11,13 @@ export function ToolBar({ selectedShape }: ToolBarType) {
           icon: tool.icon,
           selected: tool.name === selectedShape,
         };
-        return <ToolBarEntry key={tool.name} entry={entry} />;
+        return (
+          <ToolBarEntry
+            key={tool.name}
+            entry={entry}
+            onClick={() => setShape(tool.name)}
+          />
+        );
       })}
     </div>
   );
