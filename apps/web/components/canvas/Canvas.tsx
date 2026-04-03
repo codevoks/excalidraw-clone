@@ -11,7 +11,7 @@ export function Canvas() {
   const draggStart = useRef<PointType | null>(null);
   const draggEnd = useRef<PointType | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const rectangles = useRef<Array<Shape>>([]);
+  const shapes = useRef<Array<Shape>>([]);
 
   const pointerDown = (event: React.PointerEvent<HTMLCanvasElement>) => {
     event.currentTarget.setPointerCapture(event.pointerId);
@@ -41,10 +41,10 @@ export function Canvas() {
       x,
       y,
     };
-    rectangles.current.push(
+    shapes.current.push(
       rectangleShapeFromDrag(draggStart.current, draggEnd.current),
     );
-    paintScene(context, rectangles.current);
+    paintScene(context, shapes.current);
     draggStart.current = null;
     draggEnd.current = null;
     dragging.current = false;
@@ -66,7 +66,7 @@ export function Canvas() {
     };
     paintScene(
       context,
-      rectangles.current,
+      shapes.current,
       rectangleShapeFromDrag(draggStart.current, draggEnd.current),
     );
   };
