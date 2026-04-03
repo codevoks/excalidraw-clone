@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { pointerToCanvas, PointType } from "./shapes/point";
 import { paintScene } from "./render/paintScene";
 import { rectangleShapeFromDrag } from "./shapes/rectangle";
-import { Shape } from "./shapes/shape/shapes.types";
+import { SHAPES_NAMES, Shape } from "./shapes/shape";
 
 export function Canvas() {
   const dragging = useRef(false);
