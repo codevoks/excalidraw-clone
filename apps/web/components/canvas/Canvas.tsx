@@ -2,18 +2,16 @@
 
 import { useRef } from "react";
 import { pointerToCanvas, PointType } from "./shapes/point";
-import {
-  RectangleType,
-  paintRectangleDragPreview,
-  paintRectangles,
-} from "./shapes/rectangle";
+import { paintScene } from "./render/paintScene";
+import { rectangleShapeFromDrag } from "./shapes/rectangle";
+import { Shape } from "./shapes/shapes.types";
 
 export function Canvas() {
   const dragging = useRef(false);
   const draggStart = useRef<PointType | null>(null);
   const draggEnd = useRef<PointType | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const rectangles = useRef<Array<RectangleType>>([]);
+  const rectangles = useRef<Array<Shape>>([]);
 
   const pointerDown = (event: React.PointerEvent<HTMLCanvasElement>) => {
     event.currentTarget.setPointerCapture(event.pointerId);
@@ -38,27 +36,18 @@ export function Canvas() {
     if (!context) {
       return;
     }
-    paintRectangles(context, rectangles.current);
     const { x, y } = pointerToCanvas(canvas, event.clientX, event.clientY);
-    dragging.current = false;
     draggEnd.current = {
       x,
       y,
     };
-    const { left, top, width, height } = paintRectangleDragPreview(
-      context,
-      {
-        x: draggStart.current.x,
-        y: draggStart.current.y,
-      },
-      {
-        x: draggEnd.current.x,
-        y: draggEnd.current.y,
-      },
+    rectangles.current.push(
+      rectangleShapeFromDrag(draggStart.current, draggEnd.current),
     );
-    rectangles.current.push({ left, top, width, height });
+    paintScene(context, rectangles.current);
     draggStart.current = null;
     draggEnd.current = null;
+    dragging.current = false;
   };
 
   const pointerMove = (event: React.PointerEvent<HTMLCanvasElement>) => {
@@ -70,22 +59,15 @@ export function Canvas() {
     if (!context) {
       return;
     }
-    paintRectangles(context, rectangles.current);
     const { x, y } = pointerToCanvas(canvas, event.clientX, event.clientY);
     draggEnd.current = {
       x,
       y,
     };
-    const { left, top, width, height } = paintRectangleDragPreview(
+    paintScene(
       context,
-      {
-        x: draggStart.current.x,
-        y: draggStart.current.y,
-      },
-      {
-        x: draggEnd.current.x,
-        y: draggEnd.current.y,
-      },
+      rectangles.current,
+      rectangleShapeFromDrag(draggStart.current, draggEnd.current),
     );
   };
 

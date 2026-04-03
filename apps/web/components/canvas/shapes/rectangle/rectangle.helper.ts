@@ -1,7 +1,11 @@
-import { PointType, pointerToCanvas } from "../point";
+import { PointType } from "../point";
+import { Shape } from "../shapes.types";
 import { RectangleType } from "./rectangle.types";
 
-export function rectFromDrag(start: PointType, end: PointType) {
+export function rectangleShapeFromDrag(
+  start: PointType,
+  end: PointType,
+): Shape {
   const sx = start.x;
   const sy = start.y;
   const ex = end.x;
@@ -10,7 +14,7 @@ export function rectFromDrag(start: PointType, end: PointType) {
   const top = Math.min(sy, ey);
   const width = Math.abs(ex - sx);
   const height = Math.abs(ey - sy);
-  return { left, top, width, height };
+  return { type: "rectangle", left, top, width, height };
 }
 
 export function paintRectangleDragPreview(
@@ -18,15 +22,15 @@ export function paintRectangleDragPreview(
   start: PointType,
   current: PointType,
 ) {
-  const { left, top, width, height } = rectFromDrag(
+  const { left, top, width, height } = rectangleShapeFromDrag(
     { x: start.x, y: start.y },
     { x: current.x, y: current.y },
   );
   context?.strokeRect(left, top, width, height);
-  return { left, top, width, height } as RectangleType;
+  return { left, top, width, height };
 }
 
-export function paintRectangles(
+export function paintExistingRectangles(
   context: CanvasRenderingContext2D,
   rectangles: Array<RectangleType>,
 ) {
@@ -43,5 +47,3 @@ export function paintRectangles(
     );
   }
 }
-
-export function renderFrame() {}
