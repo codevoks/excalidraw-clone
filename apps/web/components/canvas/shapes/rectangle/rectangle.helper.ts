@@ -1,4 +1,5 @@
 import { PointType } from "../point";
+import { RectangleType } from "./rectangle.types";
 
 export function rectFromDrag(start: PointType, end: PointType) {
   const sx = start.x;
@@ -11,3 +12,36 @@ export function rectFromDrag(start: PointType, end: PointType) {
   const height = Math.abs(ey - sy);
   return { left, top, width, height };
 }
+
+export function paintRectangleDragPreview(
+  context: CanvasRenderingContext2D,
+  start: PointType,
+  current: PointType,
+) {
+  const { left, top, width, height } = rectFromDrag(
+    { x: start.x, y: start.y },
+    { x: current.x, y: current.y },
+  );
+  context?.strokeRect(left, top, width, height);
+  return { left, top, width, height } as RectangleType;
+}
+
+export function paintRectangles(
+  context: CanvasRenderingContext2D,
+  rectangles: Array<RectangleType>,
+) {
+  if (!rectangles || !context) {
+    return;
+  }
+  context?.clearRect(0, 0, context.canvas.width, context.canvas.height);
+  for (const rectangle of rectangles) {
+    context?.strokeRect(
+      rectangle.left,
+      rectangle.top,
+      rectangle.width,
+      rectangle.height,
+    );
+  }
+}
+
+export function rectangleDragTool(start: PointType | null, dragging: boolean) {}
