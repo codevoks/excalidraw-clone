@@ -1,19 +1,13 @@
 "use client";
 
 import { useRef } from "react";
-import { pointerToCanvas } from "./shapes/point";
+import { pointerToCanvas, PointType } from "./shapes/point";
 import { RectangleType, rectFromDrag } from "./shapes/rectangle";
-
-interface draggposition {
-  x: number;
-  y: number;
-}
 
 export function Canvas() {
   const dragging = useRef(false);
-  const draggStart = useRef<draggposition | null>(null);
-  const draggEnd = useRef<draggposition | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const draggStart = useRef<PointType | null>(null);
+  const draggEnd = useRef<PointType | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rectangles = useRef<Array<RectangleType>>([]);
 
@@ -91,7 +85,7 @@ export function Canvas() {
   };
 
   return (
-    <div ref={containerRef} className="min-h-0 w-full flex-1">
+    <div className="min-h-0 w-full flex-1">
       <canvas
         ref={canvasRef}
         className="h-full w-full bg-slate-800"
