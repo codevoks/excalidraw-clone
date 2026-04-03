@@ -1,8 +1,8 @@
 "use client";
 
 import { useRef } from "react";
-import { pointerToCanvas, rectFromDrag } from "./helper/helper";
-import { RectangleType } from "./shapes/rectangle";
+import { pointerToCanvas } from "./shapes/point";
+import { RectangleType, rectFromDrag } from "./shapes/rectangle";
 
 interface draggposition {
   x: number;
