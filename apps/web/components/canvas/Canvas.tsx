@@ -6,7 +6,12 @@ import { paintScene } from "./render/paintScene";
 import { checkShape, shapeFromDrag } from "./shapes/shape";
 import { SHAPES_NAMES, Shape } from "@repo/validation";
 
-export function Canvas({ selectedShape }: { selectedShape: SHAPES_NAMES }) {
+export function Canvas({
+  selectedShape,
+}: {
+  selectedShape: SHAPES_NAMES;
+  roomId: string;
+}) {
   const dragging = useRef(false);
   const draggStart = useRef<PointType | null>(null);
   const draggEnd = useRef<PointType | null>(null);
