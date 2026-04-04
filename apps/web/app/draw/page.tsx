@@ -8,7 +8,7 @@ import { SHAPES_NAMES } from "@repo/validation";
 
 export default function DrawPage() {
   const searchParams = useSearchParams();
-  const roomId = searchParams.get("roomId") ?? "default";
+  const roomId = searchParams.get("roomId") ?? "testRoom";
   const [selectedShape, setSelectedShape] = useState<SHAPES_NAMES>(
     SHAPES_NAMES.RECTANGLE,
   );
