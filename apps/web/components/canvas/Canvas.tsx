@@ -3,7 +3,7 @@
 import { useRef, useState, useEffect } from "react";
 import { pointerToCanvas, PointType } from "./shapes/point";
 import { paintScene } from "./render/paintScene";
-import { shapeFromDrag } from "./shapes/shape";
+import { checkShape, shapeFromDrag } from "./shapes/shape";
 import { SHAPES_NAMES, Shape } from "@repo/validation";
 
 export function Canvas({ selectedShape }: { selectedShape: SHAPES_NAMES }) {
@@ -30,10 +30,12 @@ export function Canvas({ selectedShape }: { selectedShape: SHAPES_NAMES }) {
       let newShape = null;
       try {
         newShape = JSON.parse(event.data);
+        const parsedShape = checkShape(newShape);
+        if (!parsedShape.success) {
+          return;
+        }
       } catch (error) {
         console.log("Error parsing event.data " + error);
-      }
-      if (newShape === null) {
         return;
       }
       setMessages((prevMessages) => [...prevMessages, newShape]);

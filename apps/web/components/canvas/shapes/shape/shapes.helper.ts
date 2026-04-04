@@ -1,4 +1,4 @@
-import { SHAPES_NAMES, type ShapeType } from "@repo/validation";
+import { SHAPES_NAMES, type ShapeType, ShapeSchema } from "@repo/validation";
 import { PointType } from "../point";
 import { rectangleShapeFromDrag } from "../rectangle";
 
@@ -15,7 +15,5 @@ export function shapeFromDrag(
 }
 
 export function checkShape(data: unknown) {
-  if (!data || typeof data !== "object" || !("type" in data)) {
-    return;
-  }
+  return ShapeSchema.safeParse(data);
 }
