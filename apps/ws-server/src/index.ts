@@ -10,7 +10,17 @@ const wss = new WebSocketServer({ port: 8080 });
 //   });
 // };
 
-const roomsMap = new Map<string, Set<WebSocket>>();
+const roomsToWsMap = new Map<string, Set<WebSocket>>();
+const wsToRoomsMap = new Map<WebSocket, Set<string>>();
+
+function removeWsFromMap(ws: WebSocket) {
+  for (const [roomId, webSockets] of roomsToWsMap.entries()) {
+    if (webSockets.has(ws)) {
+      webSockets.delete(ws);
+      return;
+    }
+  }
+}
 
 wss.on("connection", function connection(ws) {
   console.log("Client connected");
@@ -24,10 +34,12 @@ wss.on("connection", function connection(ws) {
       console.log("received: %s", incomingMessage);
       const parsedIncomingMessage = JSON.parse(incomingMessage);
       if ("roomId" in parsedIncomingMessage) {
-        let connections =
-          roomsMap.get(parsedIncomingMessage.roomId) || new Set<WebSocket>();
-        connections.add(ws);
-        roomsMap.set(parsedIncomingMessage.roomId, connections);
+        const roomId = String(parsedIncomingMessage.roomId);
+        removeWsFromMap(ws);
+        const peers = roomsToWsMap.get(roomId) ?? new Set<WebSocket>();
+        peers.add(ws);
+        roomsToWsMap.set(roomId, peers);
+        wsToRoomsMap.set(ws, new Set([roomId]));
         return;
       }
       wss.clients.forEach(function each(client) {
@@ -44,6 +56,8 @@ wss.on("connection", function connection(ws) {
 
   ws.on("close", () => {
     console.log("WS Connection closed");
+    removeWsFromMap(ws);
+    wsToRoomsMap.delete(ws);
   });
 });
 
