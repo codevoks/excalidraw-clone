@@ -1,6 +1,5 @@
+import { SHAPES_NAMES, type ShapeType } from "@repo/validation";
 import { PointType } from "../point";
-import { SHAPES_NAMES } from "./shapes.config";
-import { ShapeType } from "./shapes.types";
 import { rectangleShapeFromDrag } from "../rectangle";
 
 export function shapeFromDrag(

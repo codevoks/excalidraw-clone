@@ -1,4 +1,4 @@
-import { Shape } from "../shapes/shape/shapes.types";
+import type { Shape } from "@repo/validation";
 import { paintShape } from "./paintShape";
 
 export function paintScene(

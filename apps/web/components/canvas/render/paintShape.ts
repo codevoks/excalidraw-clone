@@ -1,4 +1,4 @@
-import { Shape } from "../shapes/shape/shapes.types";
+import type { Shape } from "@repo/validation";
 
 export function paintShape(context: CanvasRenderingContext2D, shape: Shape) {
   if (shape.type === "rectangle") {
