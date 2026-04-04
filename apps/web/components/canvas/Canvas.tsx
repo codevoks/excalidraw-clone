@@ -57,7 +57,7 @@ export function Canvas({
         if (!metaData || !("kind" in metaData)) {
           return;
         }
-        if (metaData.kind === "draw") {
+        if (metaData.kind === "op" && metaData.op === "add") {
           handleIncomingDraw(context, metaData.shape);
         } else if (metaData.kind === "snapshot") {
           if (!Array.isArray(metaData.shapes)) {
@@ -126,7 +126,8 @@ export function Canvas({
     draggEnd.current = null;
     dragging.current = false;
     const wsMetaData = {
-      kind: "draw",
+      kind: "op",
+      op: "add",
       shape: shapeWithId,
     };
     const socket = wsRef.current;
