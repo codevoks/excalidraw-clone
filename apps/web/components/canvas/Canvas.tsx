@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { pointerToCanvas, PointType } from "./shapes/point";
 import { paintScene } from "./render/paintScene";
 import { checkShape, shapeFromDrag } from "./shapes/shape";
@@ -18,9 +18,7 @@ export function Canvas({
   const draggEnd = useRef<PointType | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const shapes = useRef<Array<ShapeType>>([]);
-
-  const [messages, setMessages] = useState<ShapeType[]>([]);
-  const [ws, setWs] = useState<WebSocket>();
+  const wsRef = useRef<WebSocket | null>(null);
 
   const handleIncomingDraw = (
     context: CanvasRenderingContext2D,
@@ -36,7 +34,6 @@ export function Canvas({
 
   useEffect(() => {
     shapes.current = [];
-    setMessages([]);
     const canvas = canvasRef.current;
     if (!canvas) {
       return;
@@ -47,7 +44,7 @@ export function Canvas({
     }
     paintScene(context, shapes.current);
     const websocket = new WebSocket("ws://localhost:8080");
-    setWs(websocket);
+    wsRef.current = websocket;
 
     websocket.onopen = () => {
       console.log("Connected to WebSocket server");
@@ -84,6 +81,7 @@ export function Canvas({
     websocket.onclose = () => console.log("Disconnected from WebSocket server");
 
     return () => {
+      wsRef.current = null;
       websocket.close();
     };
   }, [roomId]);
@@ -130,7 +128,10 @@ export function Canvas({
       kind: "draw",
       shape: currentShape,
     };
-    ws?.send(JSON.stringify(wsMetaData));
+    const socket = wsRef.current;
+    if (socket?.readyState === WebSocket.OPEN) {
+      socket.send(JSON.stringify(wsMetaData));
+    }
   };
 
   const pointerMove = (event: React.PointerEvent<HTMLCanvasElement>) => {
