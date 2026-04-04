@@ -58,7 +58,7 @@ export function Canvas({
     websocket.onclose = () => console.log("Disconnected from WebSocket server");
 
     return () => websocket.close();
-  }, []);
+  }, [roomId]);
 
   const pointerDown = (event: React.PointerEvent<HTMLCanvasElement>) => {
     event.currentTarget.setPointerCapture(event.pointerId);

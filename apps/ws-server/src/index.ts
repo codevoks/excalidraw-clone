@@ -33,7 +33,7 @@ wss.on("connection", function connection(ws) {
   ws.send("something");
 
   ws.on("close", () => {
-    console.log("Connection closed");
+    console.log("WS Connection closed");
   });
 });
 
