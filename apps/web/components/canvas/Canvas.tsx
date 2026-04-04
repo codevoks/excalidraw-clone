@@ -4,7 +4,7 @@ import { useRef, useEffect } from "react";
 import { pointerToCanvas, PointType } from "./shapes/point";
 import { paintScene } from "./render/paintScene";
 import { checkShape, shapeFromDrag } from "./shapes/shape";
-import { SHAPES_NAMES, ShapeType } from "@repo/validation";
+import { OPS_NAMES, SHAPES_NAMES, ShapeType } from "@repo/validation";
 
 export function Canvas({
   selectedShape,
@@ -57,7 +57,7 @@ export function Canvas({
         if (!metaData || !("kind" in metaData)) {
           return;
         }
-        if (metaData.kind === "op" && metaData.op === "add") {
+        if (metaData.kind === "op" && metaData.op === OPS_NAMES.ADD) {
           handleIncomingDraw(context, metaData.shape);
         } else if (metaData.kind === "snapshot") {
           if (!Array.isArray(metaData.shapes)) {
@@ -127,7 +127,7 @@ export function Canvas({
     dragging.current = false;
     const wsMetaData = {
       kind: "op",
-      op: "add",
+      op: OPS_NAMES.ADD,
       shape: shapeWithId,
     };
     const socket = wsRef.current;

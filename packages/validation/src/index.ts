@@ -34,8 +34,24 @@ export const ShapeSchema = z.discriminatedUnion("type", [RectangleSchema]);
 
 export type ShapeType = z.infer<typeof ShapeSchema>;
 
-export const addOpSchema = z.object({
+export enum OPS_NAMES {
+  ADD = "add",
+  DELETE = "delete",
+}
+
+export const AddOpSchema = z.object({
   kind: z.literal("op"),
-  op: z.literal("add"),
+  op: z.literal(OPS_NAMES.ADD),
   shape: ShapeSchema,
 });
+
+export const DeleteOpSchema = z.object({
+  kind: z.literal("op"),
+  op: z.literal(OPS_NAMES.DELETE),
+  id: z.string().uuid(),
+});
+
+export const OpSchema = z.discriminatedUnion("op", [
+  AddOpSchema,
+  DeleteOpSchema,
+]);

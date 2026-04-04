@@ -1,5 +1,10 @@
 import { WebSocketServer, WebSocket } from "ws";
-import { ShapeType, addOpSchema } from "@repo/validation";
+import {
+  ShapeType,
+  AddOpSchema,
+  OPS_NAMES,
+  DeleteOpSchema,
+} from "@repo/validation";
 
 const wss = new WebSocketServer({ port: 8080 });
 
@@ -50,31 +55,63 @@ wss.on("connection", function connection(ws) {
         ws.send(JSON.stringify(wsMetaData));
         return;
       } else if (parsedIncomingMessage.kind === "op") {
-        const parsedAddOp = addOpSchema.safeParse(parsedIncomingMessage);
-        if (!parsedAddOp.success) {
-          return;
-        }
-        const rooms = wsToRoomsMap.get(ws);
-        if (!rooms?.size) {
-          return;
-        }
-        const [firstRoomId] = rooms;
-        if (firstRoomId === undefined) {
-          return;
-        }
-        const peers = roomsToWsMap.get(firstRoomId);
-        if (!peers) {
-          return;
-        }
-        const storedShapesInCurrentRoom =
-          storedShapesInRooms.get(firstRoomId) || [];
-        storedShapesInCurrentRoom.push(parsedAddOp.data.shape);
-        storedShapesInRooms.set(firstRoomId, storedShapesInCurrentRoom);
-        peers.forEach(function each(client) {
-          if (client.readyState === WebSocket.OPEN && client !== ws) {
-            client.send(JSON.stringify(parsedAddOp.data));
+        if (parsedIncomingMessage.op === OPS_NAMES.ADD) {
+          const parsedAddOp = AddOpSchema.safeParse(parsedIncomingMessage);
+          if (!parsedAddOp.success) {
+            return;
           }
-        });
+          const rooms = wsToRoomsMap.get(ws);
+          if (!rooms?.size) {
+            return;
+          }
+          const [firstRoomId] = rooms;
+          if (firstRoomId === undefined) {
+            return;
+          }
+          const peers = roomsToWsMap.get(firstRoomId);
+          if (!peers) {
+            return;
+          }
+          const storedShapesInCurrentRoom =
+            storedShapesInRooms.get(firstRoomId) || [];
+          storedShapesInCurrentRoom.push(parsedAddOp.data.shape);
+          storedShapesInRooms.set(firstRoomId, storedShapesInCurrentRoom);
+          peers.forEach(function each(client) {
+            if (client.readyState === WebSocket.OPEN && client !== ws) {
+              client.send(JSON.stringify(parsedAddOp.data));
+            }
+          });
+        } else if (parsedIncomingMessage.op === OPS_NAMES.DELETE) {
+          const parsedDeleteOp = DeleteOpSchema.safeParse(
+            parsedIncomingMessage,
+          );
+          if (!parsedDeleteOp.success) {
+            return;
+          }
+          const rooms = wsToRoomsMap.get(ws);
+          if (!rooms?.size) {
+            return;
+          }
+          const [firstRoomId] = rooms;
+          if (firstRoomId === undefined) {
+            return;
+          }
+          const peers = roomsToWsMap.get(firstRoomId);
+          if (!peers) {
+            return;
+          }
+          const storedShapesInCurrentRoom =
+            storedShapesInRooms.get(firstRoomId) || [];
+          const nextShapes = storedShapesInCurrentRoom.filter(
+            (shape) => shape.id !== parsedDeleteOp.data.id,
+          );
+          storedShapesInRooms.set(firstRoomId, nextShapes);
+          peers.forEach(function each(client) {
+            if (client.readyState === WebSocket.OPEN && client !== ws) {
+              client.send(JSON.stringify(parsedDeleteOp.data));
+            }
+          });
+        }
       }
     } catch (error) {
       console.error(error);
