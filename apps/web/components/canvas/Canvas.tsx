@@ -22,6 +22,18 @@ export function Canvas({
   const [messages, setMessages] = useState<ShapeType[]>([]);
   const [ws, setWs] = useState<WebSocket>();
 
+  const handleIncomingDraw = (
+    context: CanvasRenderingContext2D,
+    shape: unknown,
+  ) => {
+    const parsedShape = checkShape(shape);
+    if (!parsedShape.success) {
+      return;
+    }
+    shapes.current.push(parsedShape.data);
+    paintScene(context, shapes.current);
+  };
+
   useEffect(() => {
     shapes.current = [];
     setMessages([]);
@@ -43,24 +55,31 @@ export function Canvas({
       websocket.send(JSON.stringify(joinMetaData));
     };
     websocket.onmessage = (event) => {
-      let shapeToAdd: ShapeType | null = null;
       try {
         const metaData = JSON.parse(event.data);
-        if (!metaData || !("kind" in metaData) || metaData.kind !== "draw") {
+        if (!metaData || !("kind" in metaData)) {
           return;
         }
-        const parsedShape = checkShape(metaData.shape);
-        if (!parsedShape.success) {
-          return;
+        if (metaData.kind === "draw") {
+          handleIncomingDraw(context, metaData.shape);
+        } else if (metaData.kind === "snapshot") {
+          if (!Array.isArray(metaData.shapes)) {
+            return;
+          }
+          const next: ShapeType[] = [];
+          for (const item of metaData.shapes) {
+            const parsed = checkShape(item);
+            if (parsed.success) {
+              next.push(parsed.data);
+            }
+          }
+          shapes.current = next;
+          paintScene(context, shapes.current);
         }
-        shapeToAdd = parsedShape.data;
       } catch (error) {
         console.log("Error parsing event.data " + error);
         return;
       }
-      setMessages((prevMessages) => [...prevMessages, shapeToAdd]);
-      shapes.current.push(shapeToAdd);
-      paintScene(context, shapes.current);
     };
     websocket.onclose = () => console.log("Disconnected from WebSocket server");
 
