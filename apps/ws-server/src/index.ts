@@ -1,4 +1,5 @@
 import { WebSocketServer, WebSocket } from "ws";
+import { ShapeSchema } from "@repo/validation";
 
 const wss = new WebSocketServer({ port: 8080 });
 
@@ -42,24 +43,28 @@ wss.on("connection", function connection(ws) {
         wsToRoomsMap.set(ws, new Set([roomId]));
         return;
       } else if (parsedIncomingMessage.kind === "draw") {
+        const parsedShape = ShapeSchema.safeParse(parsedIncomingMessage.shape);
+        if (!parsedShape.success) {
+          return;
+        }
         const rooms = wsToRoomsMap.get(ws);
         if (!rooms?.size) {
           return;
         }
         const [firstRoomId] = rooms;
+        if (firstRoomId === undefined) {
+          return;
+        }
         const peers = roomsToWsMap.get(firstRoomId);
-        peers?.forEach(function each(client) {
+        if (!peers) {
+          return;
+        }
+        peers.forEach(function each(client) {
           if (client.readyState === WebSocket.OPEN && client !== ws) {
             client.send(incomingMessage);
           }
         });
       }
-
-      // wss.clients.forEach(function each(client) {
-      //   if (client.readyState === WebSocket.OPEN && client !== ws) {
-      //     client.send(incomingMessage);
-      //   }
-      // });
     } catch (error) {
       console.error(error);
     }
