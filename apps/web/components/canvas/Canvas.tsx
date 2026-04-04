@@ -23,11 +23,17 @@ export function Canvas({
   const [ws, setWs] = useState<WebSocket>();
 
   useEffect(() => {
+    shapes.current = [];
+    setMessages([]);
     const canvas = canvasRef.current;
     if (!canvas) {
       return;
     }
     const context = canvas.getContext("2d");
+    if (!context) {
+      return;
+    }
+    paintScene(context, shapes.current);
     const websocket = new WebSocket("ws://localhost:8080");
     setWs(websocket);
 
@@ -54,9 +60,6 @@ export function Canvas({
       }
       setMessages((prevMessages) => [...prevMessages, shapeToAdd]);
       shapes.current.push(shapeToAdd);
-      if (!context) {
-        return;
-      }
       paintScene(context, shapes.current);
     };
     websocket.onclose = () => console.log("Disconnected from WebSocket server");
