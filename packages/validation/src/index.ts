@@ -27,6 +27,8 @@ export const RectangleSchema = z.object({
 
 export type RectangleType = z.infer<typeof RectangleSchema>;
 
-export type Shape = RectangleType;
-
 export type ShapeType = SHAPES_NAMES;
+
+export const ShapeSchema = z.discriminatedUnion("type", [RectangleSchema]);
+
+export type Shape = z.infer<typeof ShapeSchema>;

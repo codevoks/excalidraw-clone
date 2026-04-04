@@ -3,7 +3,8 @@
 import { useRef, useState, useEffect } from "react";
 import { pointerToCanvas, PointType } from "./shapes/point";
 import { paintScene } from "./render/paintScene";
-import { SHAPES_NAMES, Shape, shapeFromDrag } from "./shapes/shape";
+import { shapeFromDrag } from "./shapes/shape";
+import { SHAPES_NAMES, Shape } from "@repo/validation";
 
 export function Canvas({ selectedShape }: { selectedShape: SHAPES_NAMES }) {
   const dragging = useRef(false);

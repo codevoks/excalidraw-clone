@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Canvas } from "../../components/canvas/Canvas";
 import { ToolBar } from "../../components/canvas/tools/ToolBar";
-import { SHAPES_NAMES } from "../../components/canvas/shapes/shape";
+import { SHAPES_NAMES } from "@repo/validation";
 
 export default function DrawPage() {
   const [selectedShape, setSelectedShape] = useState<SHAPES_NAMES>(

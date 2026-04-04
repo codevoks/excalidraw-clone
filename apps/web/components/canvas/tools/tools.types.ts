@@ -1,4 +1,4 @@
-import { SHAPES_NAMES } from "../shapes/shape";
+import { SHAPES_NAMES } from "@repo/validation";
 
 type ToolBarEntryType = {
   name: SHAPES_NAMES;

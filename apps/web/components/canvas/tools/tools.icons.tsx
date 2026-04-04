@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { SHAPES_NAMES } from "../shapes/shape";
+import { SHAPES_NAMES } from "@repo/validation";
 
 function RectangleIcon() {
   return (
