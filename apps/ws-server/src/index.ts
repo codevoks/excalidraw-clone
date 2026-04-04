@@ -10,7 +10,7 @@ const wss = new WebSocketServer({ port: 8080 });
 //   });
 // };
 
-Map<string, Set<WebSocket>>;
+const roomsMap = new Map<string, Set<WebSocket>>();
 
 wss.on("connection", function connection(ws) {
   console.log("Client connected");
@@ -40,5 +40,5 @@ wss.on("connection", function connection(ws) {
 });
 
 wss.on("close", function close() {
-  console.log("Client disconnected");
+  console.log("Server shut down");
 });
