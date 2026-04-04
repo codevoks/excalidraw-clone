@@ -22,6 +22,14 @@ wss.on("connection", function connection(ws) {
     try {
       const incomingMessage = typeof data === "string" ? data : data.toString();
       console.log("received: %s", incomingMessage);
+      const parsedIncomingMessage = JSON.parse(incomingMessage);
+      if ("roomId" in parsedIncomingMessage) {
+        let connections =
+          roomsMap.get(parsedIncomingMessage.roomId) || new Set<WebSocket>();
+        connections.add(ws);
+        roomsMap.set(parsedIncomingMessage.roomId, connections);
+        return;
+      }
       wss.clients.forEach(function each(client) {
         if (client.readyState === WebSocket.OPEN && client !== ws) {
           client.send(incomingMessage);
