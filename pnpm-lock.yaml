@@ -118,6 +118,9 @@ importers:
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
+      '@repo/validation':
+        specifier: workspace:*
+        version: link:../../packages/validation
       '@types/ws':
         specifier: ^8.18.1
         version: 8.18.1
