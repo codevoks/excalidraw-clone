@@ -144,6 +144,7 @@ export function Canvas({
     if (socket?.readyState === WebSocket.OPEN) {
       socket.send(JSON.stringify(wsMetaData));
     }
+    canvas.focus();
   };
 
   const pointerMove = (event: React.PointerEvent<HTMLCanvasElement>) => {
@@ -167,16 +168,44 @@ export function Canvas({
     );
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    const canvas = canvasRef.current;
+    if (!canvas) {
+      return;
+    }
+    const context = canvas.getContext("2d");
+    if (!context || (event.key !== "Backspace" && event.key !== "Delete")) {
+      return;
+    }
+    const list = shapes.current;
+    const numberOfShapes = list.length;
+    if (!numberOfShapes || numberOfShapes < 1) {
+      return;
+    }
+    event.preventDefault();
+    const lastId = list[numberOfShapes - 1]?.id;
+    const next = list.filter((shape) => shape.id !== lastId);
+    shapes.current = next;
+    paintScene(context, shapes.current);
+    const socket = wsRef.current;
+    const wsMetaData = { kind: "op", op: OPS_NAMES.DELETE, id: lastId };
+    if (socket?.readyState === WebSocket.OPEN) {
+      socket.send(JSON.stringify(wsMetaData));
+    }
+  };
+
   return (
     <div className="flex-1 w-full min-h-0">
       <canvas
         ref={canvasRef}
         className="w-full h-full bg-slate-800"
+        tabIndex={0}
         height={600}
         width={400}
         onPointerDown={pointerDown}
         onPointerMove={pointerMove}
         onPointerUp={pointerUp}
+        onKeyDown={handleKeyDown}
       />
     </div>
   );
