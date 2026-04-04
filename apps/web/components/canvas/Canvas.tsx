@@ -8,6 +8,7 @@ import { SHAPES_NAMES, Shape } from "@repo/validation";
 
 export function Canvas({
   selectedShape,
+  roomId,
 }: {
   selectedShape: SHAPES_NAMES;
   roomId: string;
