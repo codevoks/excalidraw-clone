@@ -31,7 +31,11 @@ export function Canvas({
     const websocket = new WebSocket("ws://localhost:8080");
     setWs(websocket);
 
-    websocket.onopen = () => console.log("Connected to WebSocket server");
+    websocket.onopen = () => {
+      console.log("Connected to WebSocket server");
+      const joinMetaData = { roomId: roomId };
+      websocket.send(JSON.stringify(joinMetaData));
+    };
     websocket.onmessage = (event) => {
       let shapeToAdd: Shape | null = null;
       try {
