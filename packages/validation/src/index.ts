@@ -19,6 +19,7 @@ export enum SHAPES_NAMES {
 
 export const RectangleSchema = z.object({
   type: z.nativeEnum(SHAPES_NAMES),
+  id: z.string().uuid(),
   left: z.number(),
   top: z.number(),
   width: z.number(),
@@ -32,3 +33,9 @@ export type ShapeNameType = SHAPES_NAMES;
 export const ShapeSchema = z.discriminatedUnion("type", [RectangleSchema]);
 
 export type ShapeType = z.infer<typeof ShapeSchema>;
+
+export const addOpSchema = z.object({
+  kind: z.literal("op"),
+  op: z.literal("add"),
+  shape: ShapeSchema,
+});

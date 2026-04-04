@@ -119,14 +119,15 @@ export function Canvas({
       draggStart.current,
       draggEnd.current,
     );
-    shapes.current.push(currentShape);
+    const shapeWithId = { ...currentShape, id: crypto.randomUUID() };
+    shapes.current.push(shapeWithId);
     paintScene(context, shapes.current);
     draggStart.current = null;
     draggEnd.current = null;
     dragging.current = false;
     const wsMetaData = {
       kind: "draw",
-      shape: currentShape,
+      shape: shapeWithId,
     };
     const socket = wsRef.current;
     if (socket?.readyState === WebSocket.OPEN) {
