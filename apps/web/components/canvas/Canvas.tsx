@@ -33,7 +33,7 @@ export function Canvas({
 
     websocket.onopen = () => {
       console.log("Connected to WebSocket server");
-      const joinMetaData = { roomId: roomId };
+      const joinMetaData = { kind: "join", roomId: roomId };
       websocket.send(JSON.stringify(joinMetaData));
     };
     websocket.onmessage = (event) => {
@@ -98,7 +98,11 @@ export function Canvas({
     draggStart.current = null;
     draggEnd.current = null;
     dragging.current = false;
-    ws?.send(JSON.stringify(currentShape));
+    const wsMetaData = {
+      kind: "draw",
+      shape: currentShape,
+    };
+    ws?.send(JSON.stringify(wsMetaData));
   };
 
   const pointerMove = (event: React.PointerEvent<HTMLCanvasElement>) => {

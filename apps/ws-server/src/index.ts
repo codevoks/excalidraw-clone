@@ -42,11 +42,23 @@ wss.on("connection", function connection(ws) {
         wsToRoomsMap.set(ws, new Set([roomId]));
         return;
       }
-      wss.clients.forEach(function each(client) {
+      const rooms = wsToRoomsMap.get(ws);
+      if (!rooms?.size) {
+        return;
+      }
+      const [firstRoomId] = rooms;
+      const peers = roomsToWsMap.get(firstRoomId);
+      peers?.forEach(function each(client) {
         if (client.readyState === WebSocket.OPEN && client !== ws) {
           client.send(incomingMessage);
         }
       });
+
+      // wss.clients.forEach(function each(client) {
+      //   if (client.readyState === WebSocket.OPEN && client !== ws) {
+      //     client.send(incomingMessage);
+      //   }
+      // });
     } catch (error) {
       console.error(error);
     }
