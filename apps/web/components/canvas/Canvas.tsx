@@ -57,8 +57,18 @@ export function Canvas({
         if (!metaData || !("kind" in metaData)) {
           return;
         }
-        if (metaData.kind === "op" && metaData.op === OPS_NAMES.ADD) {
-          handleIncomingDraw(context, metaData.shape);
+        if (metaData.kind === "op") {
+          if (metaData.op === OPS_NAMES.ADD) {
+            handleIncomingDraw(context, metaData.shape);
+          } else if (metaData.op === OPS_NAMES.DELETE) {
+            const next = shapes.current.filter(
+              (shape) => shape.id !== metaData.id,
+            );
+            shapes.current = next;
+            paintScene(context, shapes.current);
+          } else {
+            return;
+          }
         } else if (metaData.kind === "snapshot") {
           if (!Array.isArray(metaData.shapes)) {
             return;
