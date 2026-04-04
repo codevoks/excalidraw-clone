@@ -33,7 +33,7 @@ wss.on("connection", function connection(ws) {
       const incomingMessage = typeof data === "string" ? data : data.toString();
       console.log("received: %s", incomingMessage);
       const parsedIncomingMessage = JSON.parse(incomingMessage);
-      if ("roomId" in parsedIncomingMessage) {
+      if (parsedIncomingMessage.kind === "join") {
         const roomId = String(parsedIncomingMessage.roomId);
         removeWsFromMap(ws);
         const peers = roomsToWsMap.get(roomId) ?? new Set<WebSocket>();
@@ -41,18 +41,19 @@ wss.on("connection", function connection(ws) {
         roomsToWsMap.set(roomId, peers);
         wsToRoomsMap.set(ws, new Set([roomId]));
         return;
-      }
-      const rooms = wsToRoomsMap.get(ws);
-      if (!rooms?.size) {
-        return;
-      }
-      const [firstRoomId] = rooms;
-      const peers = roomsToWsMap.get(firstRoomId);
-      peers?.forEach(function each(client) {
-        if (client.readyState === WebSocket.OPEN && client !== ws) {
-          client.send(incomingMessage);
+      } else if (parsedIncomingMessage.kind === "draw") {
+        const rooms = wsToRoomsMap.get(ws);
+        if (!rooms?.size) {
+          return;
         }
-      });
+        const [firstRoomId] = rooms;
+        const peers = roomsToWsMap.get(firstRoomId);
+        peers?.forEach(function each(client) {
+          if (client.readyState === WebSocket.OPEN && client !== ws) {
+            client.send(incomingMessage);
+          }
+        });
+      }
 
       // wss.clients.forEach(function each(client) {
       //   if (client.readyState === WebSocket.OPEN && client !== ws) {

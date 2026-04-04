@@ -39,7 +39,11 @@ export function Canvas({
     websocket.onmessage = (event) => {
       let shapeToAdd: Shape | null = null;
       try {
-        const parsedShape = checkShape(JSON.parse(event.data));
+        const metaData = JSON.parse(event.data);
+        if (!metaData || !("kind" in metaData) || metaData.kind !== "draw") {
+          return;
+        }
+        const parsedShape = checkShape(metaData.shape);
         if (!parsedShape.success) {
           return;
         }
@@ -57,7 +61,9 @@ export function Canvas({
     };
     websocket.onclose = () => console.log("Disconnected from WebSocket server");
 
-    return () => websocket.close();
+    return () => {
+      websocket.close();
+    };
   }, [roomId]);
 
   const pointerDown = (event: React.PointerEvent<HTMLCanvasElement>) => {
