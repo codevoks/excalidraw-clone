@@ -1,10 +1,5 @@
 import { WebSocketServer, WebSocket } from "ws";
-import {
-  ShapeType,
-  AddOpSchema,
-  OPS_NAMES,
-  DeleteOpSchema,
-} from "@repo/validation";
+import { ShapeType, OpSchema, OPS_NAMES } from "@repo/validation";
 
 const wss = new WebSocketServer({ port: 8080 });
 
@@ -87,34 +82,27 @@ wss.on("connection", function connection(ws) {
         ws.send(JSON.stringify(wsMetaData));
         return;
       } else if (parsedIncomingMessage.kind === "op") {
+        const parsedOp = OpSchema.safeParse(parsedIncomingMessage);
+        if (!parsedOp.success) {
+          return;
+        }
         const ctx = getRoomContext(ws);
         if (!ctx) {
           return;
         }
         const { roomId, peers } = ctx;
+        const op = parsedOp.data;
 
-        if (parsedIncomingMessage.op === OPS_NAMES.ADD) {
-          const parsedAddOp = AddOpSchema.safeParse(parsedIncomingMessage);
-          if (!parsedAddOp.success) {
-            return;
-          }
+        if (op.op === OPS_NAMES.ADD) {
           const list = storedShapesInRooms.get(roomId) || [];
-          list.push(parsedAddOp.data.shape);
+          list.push(op.shape);
           storedShapesInRooms.set(roomId, list);
-          broadcastToPeers(ws, peers, parsedAddOp.data);
-        } else if (parsedIncomingMessage.op === OPS_NAMES.DELETE) {
-          const parsedDeleteOp = DeleteOpSchema.safeParse(
-            parsedIncomingMessage,
-          );
-          if (!parsedDeleteOp.success) {
-            return;
-          }
+          broadcastToPeers(ws, peers, op);
+        } else if (op.op === OPS_NAMES.DELETE) {
           const list = storedShapesInRooms.get(roomId) || [];
-          const nextShapes = list.filter(
-            (shape) => shape.id !== parsedDeleteOp.data.id,
-          );
+          const nextShapes = list.filter((shape) => shape.id !== op.id);
           storedShapesInRooms.set(roomId, nextShapes);
-          broadcastToPeers(ws, peers, parsedDeleteOp.data);
+          broadcastToPeers(ws, peers, op);
         }
       }
     } catch (error) {
