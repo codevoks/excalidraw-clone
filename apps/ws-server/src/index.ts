@@ -27,7 +27,6 @@ function removeWsFromMap(ws: WebSocket) {
 
 wss.on("connection", function connection(ws) {
   console.log("Client connected");
-  ws.send("Welcome! You are connected to the WebSocket server.");
 
   ws.on("error", console.error);
 
