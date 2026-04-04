@@ -1,5 +1,5 @@
 import { WebSocketServer, WebSocket } from "ws";
-import { ShapeSchema } from "@repo/validation";
+import { ShapeSchema, ShapeType } from "@repo/validation";
 
 const wss = new WebSocketServer({ port: 8080 });
 
@@ -13,6 +13,8 @@ const wss = new WebSocketServer({ port: 8080 });
 
 const roomsToWsMap = new Map<string, Set<WebSocket>>();
 const wsToRoomsMap = new Map<WebSocket, Set<string>>();
+
+const storedShapesInRooms = new Map<string, ShapeType[]>();
 
 function removeWsFromMap(ws: WebSocket) {
   for (const [roomId, webSockets] of roomsToWsMap.entries()) {
@@ -41,6 +43,14 @@ wss.on("connection", function connection(ws) {
         peers.add(ws);
         roomsToWsMap.set(roomId, peers);
         wsToRoomsMap.set(ws, new Set([roomId]));
+        const storedShapesInRoom = storedShapesInRooms.get(roomId) || [];
+        for (const currentStoredShape of storedShapesInRoom) {
+          const wsMetaData = {
+            kind: "draw",
+            shape: currentStoredShape,
+          };
+          ws.send(JSON.stringify(wsMetaData));
+        }
         return;
       } else if (parsedIncomingMessage.kind === "draw") {
         const parsedShape = ShapeSchema.safeParse(parsedIncomingMessage.shape);
@@ -59,6 +69,10 @@ wss.on("connection", function connection(ws) {
         if (!peers) {
           return;
         }
+        const storedShapesInCurrentRoom =
+          storedShapesInRooms.get(firstRoomId) || [];
+        storedShapesInCurrentRoom.push(parsedShape.data);
+        storedShapesInRooms.set(firstRoomId, storedShapesInCurrentRoom);
         peers.forEach(function each(client) {
           if (client.readyState === WebSocket.OPEN && client !== ws) {
             client.send(incomingMessage);

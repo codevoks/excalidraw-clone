@@ -1,10 +1,10 @@
 import { PointType } from "../point";
-import { SHAPES_NAMES, type Shape } from "@repo/validation";
+import { SHAPES_NAMES, type ShapeType } from "@repo/validation";
 
 export function rectangleShapeFromDrag(
   start: PointType,
   end: PointType,
-): Shape {
+): ShapeType {
   const sx = start.x;
   const sy = start.y;
   const ex = end.x;
@@ -31,7 +31,7 @@ export function paintRectangleDragPreview(
 
 export function paintExistingRectangles(
   context: CanvasRenderingContext2D,
-  rectangles: Array<Shape>,
+  rectangles: Array<ShapeType>,
 ) {
   if (!rectangles || !context) {
     return;

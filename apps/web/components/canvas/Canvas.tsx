@@ -4,7 +4,7 @@ import { useRef, useState, useEffect } from "react";
 import { pointerToCanvas, PointType } from "./shapes/point";
 import { paintScene } from "./render/paintScene";
 import { checkShape, shapeFromDrag } from "./shapes/shape";
-import { SHAPES_NAMES, Shape } from "@repo/validation";
+import { SHAPES_NAMES, ShapeType } from "@repo/validation";
 
 export function Canvas({
   selectedShape,
@@ -17,9 +17,9 @@ export function Canvas({
   const draggStart = useRef<PointType | null>(null);
   const draggEnd = useRef<PointType | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const shapes = useRef<Array<Shape>>([]);
+  const shapes = useRef<Array<ShapeType>>([]);
 
-  const [messages, setMessages] = useState<Shape[]>([]);
+  const [messages, setMessages] = useState<ShapeType[]>([]);
   const [ws, setWs] = useState<WebSocket>();
 
   useEffect(() => {
@@ -43,7 +43,7 @@ export function Canvas({
       websocket.send(JSON.stringify(joinMetaData));
     };
     websocket.onmessage = (event) => {
-      let shapeToAdd: Shape | null = null;
+      let shapeToAdd: ShapeType | null = null;
       try {
         const metaData = JSON.parse(event.data);
         if (!metaData || !("kind" in metaData) || metaData.kind !== "draw") {
