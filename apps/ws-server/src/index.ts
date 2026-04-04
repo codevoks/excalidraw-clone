@@ -30,6 +30,38 @@ function removeWsFromMap(ws: WebSocket) {
   }
 }
 
+function getRoomContext(ws: WebSocket): {
+  roomId: string;
+  peers: Set<WebSocket>;
+} | null {
+  const rooms = wsToRoomsMap.get(ws);
+  if (!rooms?.size) {
+    return null;
+  }
+  const [firstRoomId] = rooms;
+  if (firstRoomId === undefined) {
+    return null;
+  }
+  const peers = roomsToWsMap.get(firstRoomId);
+  if (!peers) {
+    return null;
+  }
+  return { roomId: firstRoomId, peers };
+}
+
+function broadcastToPeers(
+  sender: WebSocket,
+  peers: Set<WebSocket>,
+  payload: unknown,
+) {
+  const message = JSON.stringify(payload);
+  for (const client of peers) {
+    if (client.readyState === WebSocket.OPEN && client !== sender) {
+      client.send(message);
+    }
+  }
+}
+
 wss.on("connection", function connection(ws) {
   console.log("Client connected");
 
@@ -55,32 +87,21 @@ wss.on("connection", function connection(ws) {
         ws.send(JSON.stringify(wsMetaData));
         return;
       } else if (parsedIncomingMessage.kind === "op") {
+        const ctx = getRoomContext(ws);
+        if (!ctx) {
+          return;
+        }
+        const { roomId, peers } = ctx;
+
         if (parsedIncomingMessage.op === OPS_NAMES.ADD) {
           const parsedAddOp = AddOpSchema.safeParse(parsedIncomingMessage);
           if (!parsedAddOp.success) {
             return;
           }
-          const rooms = wsToRoomsMap.get(ws);
-          if (!rooms?.size) {
-            return;
-          }
-          const [firstRoomId] = rooms;
-          if (firstRoomId === undefined) {
-            return;
-          }
-          const peers = roomsToWsMap.get(firstRoomId);
-          if (!peers) {
-            return;
-          }
-          const storedShapesInCurrentRoom =
-            storedShapesInRooms.get(firstRoomId) || [];
-          storedShapesInCurrentRoom.push(parsedAddOp.data.shape);
-          storedShapesInRooms.set(firstRoomId, storedShapesInCurrentRoom);
-          peers.forEach(function each(client) {
-            if (client.readyState === WebSocket.OPEN && client !== ws) {
-              client.send(JSON.stringify(parsedAddOp.data));
-            }
-          });
+          const list = storedShapesInRooms.get(roomId) || [];
+          list.push(parsedAddOp.data.shape);
+          storedShapesInRooms.set(roomId, list);
+          broadcastToPeers(ws, peers, parsedAddOp.data);
         } else if (parsedIncomingMessage.op === OPS_NAMES.DELETE) {
           const parsedDeleteOp = DeleteOpSchema.safeParse(
             parsedIncomingMessage,
@@ -88,29 +109,12 @@ wss.on("connection", function connection(ws) {
           if (!parsedDeleteOp.success) {
             return;
           }
-          const rooms = wsToRoomsMap.get(ws);
-          if (!rooms?.size) {
-            return;
-          }
-          const [firstRoomId] = rooms;
-          if (firstRoomId === undefined) {
-            return;
-          }
-          const peers = roomsToWsMap.get(firstRoomId);
-          if (!peers) {
-            return;
-          }
-          const storedShapesInCurrentRoom =
-            storedShapesInRooms.get(firstRoomId) || [];
-          const nextShapes = storedShapesInCurrentRoom.filter(
+          const list = storedShapesInRooms.get(roomId) || [];
+          const nextShapes = list.filter(
             (shape) => shape.id !== parsedDeleteOp.data.id,
           );
-          storedShapesInRooms.set(firstRoomId, nextShapes);
-          peers.forEach(function each(client) {
-            if (client.readyState === WebSocket.OPEN && client !== ws) {
-              client.send(JSON.stringify(parsedDeleteOp.data));
-            }
-          });
+          storedShapesInRooms.set(roomId, nextShapes);
+          broadcastToPeers(ws, peers, parsedDeleteOp.data);
         }
       }
     } catch (error) {
