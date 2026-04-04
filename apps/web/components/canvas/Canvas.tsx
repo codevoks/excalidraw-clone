@@ -27,19 +27,19 @@ export function Canvas({ selectedShape }: { selectedShape: SHAPES_NAMES }) {
 
     websocket.onopen = () => console.log("Connected to WebSocket server");
     websocket.onmessage = (event) => {
-      let newShape = null;
+      let shapeToAdd: Shape | null = null;
       try {
-        newShape = JSON.parse(event.data);
-        const parsedShape = checkShape(newShape);
+        const parsedShape = checkShape(JSON.parse(event.data));
         if (!parsedShape.success) {
           return;
         }
+        shapeToAdd = parsedShape.data;
       } catch (error) {
         console.log("Error parsing event.data " + error);
         return;
       }
-      setMessages((prevMessages) => [...prevMessages, newShape]);
-      shapes.current.push(newShape);
+      setMessages((prevMessages) => [...prevMessages, shapeToAdd]);
+      shapes.current.push(shapeToAdd);
       if (!context) {
         return;
       }

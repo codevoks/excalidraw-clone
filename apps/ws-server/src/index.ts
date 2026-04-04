@@ -21,7 +21,7 @@ wss.on("connection", function connection(ws) {
       const incomingMessage = typeof data === "string" ? data : data.toString();
       console.log("received: %s", incomingMessage);
       wss.clients.forEach(function each(client) {
-        if (client.readyState === WebSocket.OPEN) {
+        if (client.readyState === WebSocket.OPEN && client !== ws) {
           client.send(incomingMessage);
         }
       });
@@ -31,6 +31,10 @@ wss.on("connection", function connection(ws) {
   });
 
   ws.send("something");
+
+  ws.on("close", () => {
+    console.log("Connection closed");
+  });
 });
 
 wss.on("close", function close() {
