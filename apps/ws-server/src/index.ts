@@ -103,6 +103,19 @@ wss.on("connection", function connection(ws) {
           const nextShapes = list.filter((shape) => shape.id !== op.id);
           storedShapesInRooms.set(roomId, nextShapes);
           broadcastToPeers(ws, peers, op);
+        } else if (op.op === OPS_NAMES.UPDATE) {
+          const list = storedShapesInRooms.get(roomId) || [];
+          const index = list.findIndex((shape) => shape.id === op.id);
+          if (
+            index !== -1 &&
+            list[index] &&
+            list[index].type === op.update.type
+          ) {
+            const merged = { ...list[index], ...op.update };
+            list[index] = merged;
+            storedShapesInRooms.set(roomId, list);
+            broadcastToPeers(ws, peers, op);
+          }
         }
       }
     } catch (error) {

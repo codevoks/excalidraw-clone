@@ -66,6 +66,21 @@ export function Canvas({
             );
             shapes.current = next;
             paintScene(context, shapes.current);
+          } else if (metaData.op === OPS_NAMES.UPDATE) {
+            const index = shapes.current.findIndex(
+              (shape) => shape.id === metaData.id,
+            );
+            if (
+              index !== -1 &&
+              shapes.current[index] &&
+              shapes.current[index].type === metaData.update.type
+            ) {
+              shapes.current[index] = {
+                ...shapes.current[index],
+                ...metaData.update,
+              };
+              paintScene(context, shapes.current);
+            }
           } else {
             return;
           }
