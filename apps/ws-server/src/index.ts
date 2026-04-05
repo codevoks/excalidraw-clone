@@ -95,9 +95,10 @@ wss.on("connection", function connection(ws) {
 
         if (op.op === OPS_NAMES.ADD) {
           const list = storedShapesInRooms.get(roomId) || [];
-          list.push(op.shape);
+          const shape = { ...op.shape, version: 0 };
+          list.push(shape);
           storedShapesInRooms.set(roomId, list);
-          broadcastToPeers(ws, peers, op);
+          broadcastToPeers(ws, peers, { ...op, shape });
         } else if (op.op === OPS_NAMES.DELETE) {
           const list = storedShapesInRooms.get(roomId) || [];
           const nextShapes = list.filter((shape) => shape.id !== op.id);
