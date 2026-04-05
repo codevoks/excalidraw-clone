@@ -98,7 +98,9 @@ wss.on("connection", function connection(ws) {
           const shape = { ...op.shape, version: 0 };
           list.push(shape);
           storedShapesInRooms.set(roomId, list);
-          broadcastToPeers(ws, peers, { ...op, shape });
+          const addPayload = { ...op, shape };
+          broadcastToPeers(ws, peers, addPayload);
+          ws.send(JSON.stringify(addPayload));
         } else if (op.op === OPS_NAMES.DELETE) {
           const list = storedShapesInRooms.get(roomId) || [];
           const nextShapes = list.filter((shape) => shape.id !== op.id);
@@ -131,10 +133,12 @@ wss.on("connection", function connection(ws) {
           merged.version = list[index].version + 1;
           list[index] = merged;
           storedShapesInRooms.set(roomId, list);
-          broadcastToPeers(ws, peers, {
+          const updatePayload = {
             ...op,
             newVersion: merged.version,
-          });
+          };
+          broadcastToPeers(ws, peers, updatePayload);
+          ws.send(JSON.stringify(updatePayload));
         }
       }
     } catch (error) {

@@ -34,7 +34,13 @@ export function Canvas({
     if (!parsedShape.success) {
       return;
     }
-    shapes.current.push(parsedShape.data);
+    const data = parsedShape.data;
+    const idx = shapes.current.findIndex((s) => s.id === data.id);
+    if (idx === -1) {
+      shapes.current.push(data);
+    } else {
+      shapes.current[idx] = data;
+    }
     paintScene(context, shapes.current);
   };
 
