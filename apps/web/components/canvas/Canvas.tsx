@@ -5,7 +5,12 @@ import { pointerToCanvas, PointType } from "./shapes/point";
 import { paintScene } from "./render/paintScene";
 import { checkShape, shapeFromDrag } from "./shapes/shape";
 import { canvasDebugBridge } from "./canvasDebugBridge";
-import { OPS_NAMES, SHAPES_NAMES, ShapeType } from "@repo/validation";
+import {
+  OpRejectedSchema,
+  OPS_NAMES,
+  SHAPES_NAMES,
+  ShapeType,
+} from "@repo/validation";
 
 export function Canvas({
   selectedShape,
@@ -102,6 +107,17 @@ export function Canvas({
             }
           }
           shapes.current = next;
+          paintScene(context, shapes.current);
+        } else if (metaData.kind === "op_rejected") {
+          const parsedData = OpRejectedSchema.safeParse(metaData);
+          if (!parsedData.success) {
+            return;
+          }
+          const index = shapes.current.findIndex(
+            (shape) => shape.id === parsedData.data.id,
+          );
+          if (index === -1) return;
+          shapes.current[index] = parsedData.data.shape;
           paintScene(context, shapes.current);
         }
       } catch (error) {
