@@ -1,4 +1,8 @@
-import { subscriber } from "./client";
+import { publisher, subscriber } from "./client";
+
+export async function publish(channel: string, message: string): Promise<void> {
+  await publisher.publish(channel, message);
+}
 
 export async function subscribe(
   channel: string,

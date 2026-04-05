@@ -1,1 +1,1 @@
-export { subscribe, unsubscribe } from "./pubsub";
+export { publish, subscribe, unsubscribe } from "./pubsub";
