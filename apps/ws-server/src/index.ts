@@ -1,3 +1,5 @@
+import "dotenv/config";
+
 import { WebSocketServer, WebSocket } from "ws";
 import { ShapeType, OpSchema, OPS_NAMES } from "@repo/validation";
 

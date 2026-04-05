@@ -8,8 +8,10 @@
     "dev": "tsx watch src/index.ts"
   },
   "dependencies": {
+    "@repo/db": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@repo/validation": "workspace:*",
+    "dotenv": "^17.3.1",
     "@types/ws": "^8.18.1",
     "ws": "^8.20.0"
   },
