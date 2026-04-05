@@ -68,6 +68,12 @@ export type ShapeDraftType = z.infer<typeof ShapeDraftSchema>;
 
 export type ShapeType = z.infer<typeof ShapeSchema>;
 
+export const RoomCanvasStateSchema = z.object({
+  shapes: z.array(z.unknown()),
+});
+
+export type RoomCanvasState = z.infer<typeof RoomCanvasStateSchema>;
+
 export const ShapeUpdateSchema = RectangleUpdateSchema;
 
 export enum OPS_NAMES {

@@ -20,13 +20,13 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.6.0",
     "@prisma/client": "^7.6.0",
+    "@repo/validation": "workspace:*",
     "dotenv": "^17.3.1",
     "pg": "^8.20.0"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "@repo/validation": "workspace:*",
     "@types/pg": "^8.20.0",
     "eslint": "^9.39.1",
     "prisma": "^7.6.0",
