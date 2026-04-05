@@ -101,3 +101,14 @@ export const OpSchema = z.discriminatedUnion("op", [
   DeleteOpSchema,
   UpdateOpSchema,
 ]);
+
+export const OpRejectedSchema = z.object({
+  id: z.string().uuid(),
+  kind: z.literal("op_rejected"),
+  op: z.literal(OPS_NAMES.UPDATE),
+  reason: z.literal("stale_version"),
+  serverVersion: z.number().min(0),
+  shape: ShapeSchema,
+});
+
+export type OpRejectedType = z.infer<typeof OpRejectedSchema>;
