@@ -1,1 +1,1 @@
-export { publisher, subscriber } from "./client";
+export { subscribe, unsubscribe } from "./pubsub";
