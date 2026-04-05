@@ -118,6 +118,9 @@ importers:
       '@repo/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@repo/pubsub':
+        specifier: workspace:*
+        version: link:../../packages/pubsub
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
