@@ -1,10 +1,10 @@
-import type { ShapeType } from "@repo/validation";
+import type { ShapeDraftType, ShapeType } from "@repo/validation";
 import { paintShape } from "./paintShape";
 
 export function paintScene(
   context: CanvasRenderingContext2D,
   shapes: ShapeType[],
-  draft?: ShapeType | null,
+  draft?: ShapeDraftType | null,
 ) {
   context.clearRect(0, 0, context.canvas.width, context.canvas.height);
   for (const shape of shapes) {

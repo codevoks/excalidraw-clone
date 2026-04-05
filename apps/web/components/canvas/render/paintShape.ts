@@ -1,8 +1,8 @@
-import type { ShapeType } from "@repo/validation";
+import type { ShapeDraftType, ShapeType } from "@repo/validation";
 
 export function paintShape(
   context: CanvasRenderingContext2D,
-  shape: ShapeType,
+  shape: ShapeDraftType,
 ) {
   if (shape.type === "rectangle") {
     context.strokeRect(shape.left, shape.top, shape.width, shape.height);

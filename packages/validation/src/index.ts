@@ -17,6 +17,14 @@ export enum SHAPES_NAMES {
   RECTANGLE = "rectangle",
 }
 
+export const RectangleDraftSchema = z.object({
+  type: z.literal(SHAPES_NAMES.RECTANGLE),
+  left: z.number(),
+  top: z.number(),
+  width: z.number(),
+  height: z.number(),
+});
+
 export const RectangleSchema = z.object({
   type: z.nativeEnum(SHAPES_NAMES),
   id: z.string().uuid(),
@@ -43,17 +51,23 @@ export const RectangleUpdateSchema = z
     { message: "patch must include at least one field" },
   );
 
+export type RectangleDraft = z.infer<typeof RectangleDraftSchema>;
+
 export type RectangleType = z.infer<typeof RectangleSchema>;
 
 export type ShapeNameType = SHAPES_NAMES;
 
+export const ShapeDraftSchema = z.discriminatedUnion("type", [
+  RectangleDraftSchema,
+]);
+
 export const ShapeSchema = z.discriminatedUnion("type", [RectangleSchema]);
+
+export type ShapeDraftType = z.infer<typeof ShapeDraftSchema>;
 
 export type ShapeType = z.infer<typeof ShapeSchema>;
 
-export const ShapeUpdateSchema = z.discriminatedUnion("type", [
-  RectangleUpdateSchema,
-]);
+export const ShapeUpdateSchema = RectangleUpdateSchema;
 
 export enum OPS_NAMES {
   ADD = "add",

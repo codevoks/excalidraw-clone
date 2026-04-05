@@ -1,10 +1,10 @@
 import { PointType } from "../point";
-import { SHAPES_NAMES, type ShapeType } from "@repo/validation";
+import { SHAPES_NAMES, type ShapeType, ShapeDraftType } from "@repo/validation";
 
 export function rectangleShapeFromDrag(
   start: PointType,
   end: PointType,
-): ShapeType {
+): ShapeDraftType {
   const sx = start.x;
   const sy = start.y;
   const ex = end.x;
