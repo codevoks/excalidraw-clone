@@ -103,9 +103,27 @@ wss.on("connection", function connection(ws) {
           ws.send(JSON.stringify(addPayload));
         } else if (op.op === OPS_NAMES.DELETE) {
           const list = storedShapesInRooms.get(roomId) || [];
+          const index = list.findIndex((shape) => shape.id === op.id);
+          if (index === -1 || !list[index]) {
+            return;
+          }
+          if (op.baseVersion !== list[index].version) {
+            ws.send(
+              JSON.stringify({
+                kind: "op_rejected",
+                op: OPS_NAMES.DELETE,
+                id: op.id,
+                reason: "stale_version",
+                serverVersion: list[index].version,
+                shape: list[index],
+              }),
+            );
+            return;
+          }
           const nextShapes = list.filter((shape) => shape.id !== op.id);
           storedShapesInRooms.set(roomId, nextShapes);
           broadcastToPeers(ws, peers, op);
+          ws.send(JSON.stringify(op));
         } else if (op.op === OPS_NAMES.UPDATE) {
           const list = storedShapesInRooms.get(roomId) || [];
           const index = list.findIndex((shape) => shape.id === op.id);

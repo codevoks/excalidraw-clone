@@ -86,6 +86,7 @@ export const DeleteOpSchema = z.object({
   kind: z.literal("op"),
   op: z.literal(OPS_NAMES.DELETE),
   id: z.string().uuid(),
+  baseVersion: z.number().int().min(0),
 });
 
 export const UpdateOpSchema = z.object({
@@ -102,13 +103,27 @@ export const OpSchema = z.discriminatedUnion("op", [
   UpdateOpSchema,
 ]);
 
-export const OpRejectedSchema = z.object({
-  id: z.string().uuid(),
+const opRejectedStaleFields = {
   kind: z.literal("op_rejected"),
-  op: z.literal(OPS_NAMES.UPDATE),
+  id: z.string().uuid(),
   reason: z.literal("stale_version"),
   serverVersion: z.number().int().min(0),
   shape: ShapeSchema,
+};
+
+export const OpRejectedUpdateSchema = z.object({
+  ...opRejectedStaleFields,
+  op: z.literal(OPS_NAMES.UPDATE),
 });
+
+export const OpRejectedDeleteSchema = z.object({
+  ...opRejectedStaleFields,
+  op: z.literal(OPS_NAMES.DELETE),
+});
+
+export const OpRejectedSchema = z.discriminatedUnion("op", [
+  OpRejectedUpdateSchema,
+  OpRejectedDeleteSchema,
+]);
 
 export type OpRejectedType = z.infer<typeof OpRejectedSchema>;

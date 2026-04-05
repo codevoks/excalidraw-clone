@@ -115,15 +115,23 @@ export function Canvas({
           shapes.current = next;
           paintScene(context, shapes.current);
         } else if (metaData.kind === "op_rejected") {
-          const parsedData = OpRejectedSchema.safeParse(metaData);
-          if (!parsedData.success) {
+          const r = OpRejectedSchema.safeParse(metaData);
+          if (!r.success) {
             return;
           }
-          const index = shapes.current.findIndex(
-            (shape) => shape.id === parsedData.data.id,
-          );
-          if (index === -1) return;
-          shapes.current[index] = parsedData.data.shape;
+          const data = r.data;
+          if (data.op === OPS_NAMES.UPDATE) {
+            const i = shapes.current.findIndex((s) => s.id === data.id);
+            if (i === -1) {
+              return;
+            }
+            shapes.current[i] = data.shape;
+          } else if (data.op === OPS_NAMES.DELETE) {
+            if (shapes.current.some((s) => s.id === data.id)) {
+              return;
+            }
+            shapes.current.push(data.shape);
+          }
           paintScene(context, shapes.current);
         }
       } catch (error) {
@@ -285,12 +293,21 @@ export function Canvas({
       return;
     }
     event.preventDefault();
-    const lastId = list[numberOfShapes - 1]?.id;
+    const lastShape = list[numberOfShapes - 1];
+    if (!lastShape) {
+      return;
+    }
+    const lastId = lastShape.id;
     const next = list.filter((shape) => shape.id !== lastId);
     shapes.current = next;
     paintScene(context, shapes.current);
     const socket = wsRef.current;
-    const wsMetaData = { kind: "op", op: OPS_NAMES.DELETE, id: lastId };
+    const wsMetaData = {
+      kind: "op",
+      op: OPS_NAMES.DELETE,
+      id: lastId,
+      baseVersion: lastShape.version,
+    };
     if (socket?.readyState === WebSocket.OPEN) {
       socket.send(JSON.stringify(wsMetaData));
     }
