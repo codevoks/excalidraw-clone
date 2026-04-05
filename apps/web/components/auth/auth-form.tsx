@@ -2,13 +2,11 @@
 
 import axios from "axios";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { postRequest } from "../../apiService";
 
 type AuthMode = "signin" | "signup";
 
 export function AuthForm({ mode }: { mode: AuthMode }) {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -29,8 +27,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
 
     try {
       await postRequest({ path, data: { email, password } });
-      router.push("/dashboard");
-      router.refresh();
+      window.location.assign("/dashboard");
     } catch (err) {
       if (axios.isAxiosError(err) && err.response?.data && typeof err.response.data === "object") {
         const body = err.response.data as { message?: string };
