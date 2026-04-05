@@ -76,10 +76,15 @@ export function Canvas({
               shapes.current[index] &&
               shapes.current[index].type === metaData.update.type
             ) {
-              shapes.current[index] = {
-                ...shapes.current[index],
+              const cur = shapes.current[index];
+              const merged: ShapeType = {
+                ...cur,
                 ...metaData.update,
               };
+              if (typeof metaData.newVersion === "number") {
+                merged.version = metaData.newVersion;
+              }
+              shapes.current[index] = merged;
               paintScene(context, shapes.current);
             }
           } else {
@@ -143,7 +148,11 @@ export function Canvas({
         left: prev.left + 20,
         top: prev.top + 20,
       };
-      const next: ShapeType = { ...prev, ...update };
+      const next: ShapeType = {
+        ...prev,
+        ...update,
+        version: prev.version + 1,
+      };
       shapes.current[index] = next;
       paintScene(context, shapes.current);
       const socket = wsRef.current;
@@ -152,6 +161,7 @@ export function Canvas({
         op: OPS_NAMES.UPDATE,
         id: prev.id,
         update,
+        baseVersion: prev.version,
       };
       if (socket?.readyState === WebSocket.OPEN) {
         socket.send(JSON.stringify(wsMetaData));
@@ -195,7 +205,11 @@ export function Canvas({
       draggStart.current,
       draggEnd.current,
     );
-    const shapeWithId = { ...currentShape, id: crypto.randomUUID() };
+    const shapeWithId = {
+      ...currentShape,
+      id: crypto.randomUUID(),
+      version: 0,
+    };
     shapes.current.push(shapeWithId);
     paintScene(context, shapes.current);
     draggStart.current = null;

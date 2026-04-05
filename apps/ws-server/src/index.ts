@@ -107,15 +107,21 @@ wss.on("connection", function connection(ws) {
           const list = storedShapesInRooms.get(roomId) || [];
           const index = list.findIndex((shape) => shape.id === op.id);
           if (
-            index !== -1 &&
-            list[index] &&
-            list[index].type === op.update.type
+            index === -1 ||
+            !list[index] ||
+            list[index].type !== op.update.type ||
+            op.baseVersion !== list[index].version
           ) {
-            const merged = { ...list[index], ...op.update };
-            list[index] = merged;
-            storedShapesInRooms.set(roomId, list);
-            broadcastToPeers(ws, peers, op);
+            return;
           }
+          const merged = { ...list[index], ...op.update };
+          merged.version = list[index].version + 1;
+          list[index] = merged;
+          storedShapesInRooms.set(roomId, list);
+          broadcastToPeers(ws, peers, {
+            ...op,
+            newVersion: merged.version,
+          });
         }
       }
     } catch (error) {
