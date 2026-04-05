@@ -9,6 +9,8 @@ import {
   saveCanvasState,
 } from "@repo/db";
 
+import { connectRedisClients } from "@repo/pubsub";
+
 // wss.broadcast = function broadcast(data) {
 //   wss.clients.forEach(function each(client) {
 //     if (client.readyState === WebSocket.OPEN) {
@@ -16,8 +18,6 @@ import {
 //     }
 //   });
 // };
-
-import { connectRedisClients } from "@repo/pubsub";
 
 const roomsToWsMap = new Map<string, Set<WebSocket>>();
 const wsToRoomsMap = new Map<WebSocket, Set<string>>();
