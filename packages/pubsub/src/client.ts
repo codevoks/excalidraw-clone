@@ -1,18 +1,25 @@
-import Redis from "ioredis";
+import { createClient } from "redis";
 
-let redis: Redis | null = null;
+// Create a Redis client for publishing
+const publisher = createClient();
+publisher.connect();
 
-export function getRedisClient(): Redis {
-  if (!redis) {
-    const url = process.env.REDIS_URL ?? "redis://127.0.0.1:6379";
-    redis = new Redis(url);
-  }
-  return redis;
+// Create a Redis client for subscribing
+const subscriber = createClient();
+subscriber.connect();
+
+// Subscribing to a channel
+subscriber.subscribe("notifications", (message) => {
+  console.log(`Received message: ${message}`);
+});
+
+// Publishing a message to the 'notifications' channel
+async function publishMessage() {
+  await publisher.publish("notifications", "Hello from Redis Pub/Sub!");
+  console.log("Message published");
 }
 
-export async function disconnectRedis(): Promise<void> {
-  if (redis) {
-    await redis.quit();
-    redis = null;
-  }
-}
+// Publish the message
+publishMessage().catch((error) =>
+  console.error("Error publishing message:", error),
+);
