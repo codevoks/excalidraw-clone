@@ -107,7 +107,7 @@ export const OpRejectedSchema = z.object({
   kind: z.literal("op_rejected"),
   op: z.literal(OPS_NAMES.UPDATE),
   reason: z.literal("stale_version"),
-  serverVersion: z.number().min(0),
+  serverVersion: z.number().int().min(0),
   shape: ShapeSchema,
 });
 
