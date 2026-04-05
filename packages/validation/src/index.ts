@@ -32,6 +32,7 @@ export const RectangleSchema = z.object({
   top: z.number(),
   width: z.number(),
   height: z.number(),
+  version: z.number().int().min(0),
 });
 
 export const RectangleUpdateSchema = z
@@ -92,6 +93,7 @@ export const UpdateOpSchema = z.object({
   op: z.literal(OPS_NAMES.UPDATE),
   id: z.string().uuid(),
   update: ShapeUpdateSchema,
+  baseVersion: z.number().int().min(0),
 });
 
 export const OpSchema = z.discriminatedUnion("op", [
