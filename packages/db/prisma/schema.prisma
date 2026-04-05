@@ -22,7 +22,7 @@ model Room {
   createdAt   DateTime @default(now())
   roomMembers  RoomMember[]
   roomEvents   RoomEvent[]
-  roomSnapshots RoomSnapshot[]
+  canvas       RoomCanvas?
 }
 
 model RoomMember {
@@ -47,12 +47,11 @@ model RoomEvent {
   @@id([roomId, seq])
 }
 
-model RoomSnapshot {
-  id          Int @id @default(autoincrement())
-  room        Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
-  roomId      Int
-  version     Int
-  state       Json
-  createdAt   DateTime @default(now())
-  @@unique([roomId, version])
+/// Latest canvas JSON only — one row per room (`roomId` unique).
+model RoomCanvas {
+  id        Int      @id @default(autoincrement())
+  room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  roomId    Int      @unique
+  state     Json
+  updatedAt DateTime @updatedAt
 }
