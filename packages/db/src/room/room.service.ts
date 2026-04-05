@@ -1,5 +1,5 @@
 import { db } from "../client";
-import { Room } from "@prisma/client";
+import { Prisma, Room } from "@prisma/client";
 import { handleDbError } from "../errors";
 
 import {
@@ -23,6 +23,23 @@ export async function getRoomBySlug(slug: string): Promise<Room | null> {
     return room;
   } catch (error) {
     handleDbError("getRoomBySlug", error);
+  }
+}
+
+export async function saveCanvasState(
+  roomId: number,
+  shapes: ShapeType[],
+): Promise<void> {
+  try {
+    const state = RoomCanvasStateSchema.parse({ shapes });
+    const jsonState = state as Prisma.InputJsonValue;
+    await db.roomCanvas.upsert({
+      where: { roomId },
+      create: { roomId, state: jsonState },
+      update: { state: jsonState },
+    });
+  } catch (error) {
+    handleDbError("saveCanvasState", error);
   }
 }
 
