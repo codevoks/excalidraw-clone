@@ -1,4 +1,4 @@
-import type { ShapeDraftType, ShapeType } from "@repo/validation";
+import type { ShapeDraftType } from "@repo/validation";
 
 export function paintShape(
   context: CanvasRenderingContext2D,

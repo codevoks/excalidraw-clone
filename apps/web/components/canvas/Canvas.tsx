@@ -4,6 +4,7 @@ import { useRef, useEffect } from "react";
 import { pointerToCanvas, PointType } from "./shapes/point";
 import { paintScene } from "./render/paintScene";
 import { checkShape, shapeFromDrag } from "./shapes/shape";
+import { canvasDebugBridge } from "./canvasDebugBridge";
 import { OPS_NAMES, SHAPES_NAMES, ShapeType } from "@repo/validation";
 
 export function Canvas({
@@ -111,6 +112,56 @@ export function Canvas({
     };
   }, [roomId]);
 
+  useEffect(() => {
+    canvasDebugBridge.moveLastRectPlus20 = () => {
+      const canvas = canvasRef.current;
+      if (!canvas) {
+        return;
+      }
+      const context = canvas.getContext("2d");
+      if (!context) {
+        return;
+      }
+      const list = shapes.current;
+      let index = -1;
+      for (let i = list.length - 1; i >= 0; i--) {
+        const s = list[i];
+        if (s?.type === SHAPES_NAMES.RECTANGLE) {
+          index = i;
+          break;
+        }
+      }
+      if (index === -1) {
+        return;
+      }
+      const prev = list[index];
+      if (!prev || prev.type !== SHAPES_NAMES.RECTANGLE) {
+        return;
+      }
+      const update = {
+        type: SHAPES_NAMES.RECTANGLE,
+        left: prev.left + 20,
+        top: prev.top + 20,
+      };
+      const next: ShapeType = { ...prev, ...update };
+      shapes.current[index] = next;
+      paintScene(context, shapes.current);
+      const socket = wsRef.current;
+      const wsMetaData = {
+        kind: "op",
+        op: OPS_NAMES.UPDATE,
+        id: prev.id,
+        update,
+      };
+      if (socket?.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify(wsMetaData));
+      }
+    };
+    return () => {
+      canvasDebugBridge.moveLastRectPlus20 = () => {};
+    };
+  }, []);
+
   const pointerDown = (event: React.PointerEvent<HTMLCanvasElement>) => {
     event.currentTarget.setPointerCapture(event.pointerId);
     const canvas = canvasRef.current;
@@ -159,7 +210,7 @@ export function Canvas({
     if (socket?.readyState === WebSocket.OPEN) {
       socket.send(JSON.stringify(wsMetaData));
     }
-    canvas.focus();
+    canvas.focus({ preventScroll: true });
   };
 
   const pointerMove = (event: React.PointerEvent<HTMLCanvasElement>) => {

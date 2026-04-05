@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Canvas } from "../../components/canvas/Canvas";
+import { canvasDebugBridge } from "../../components/canvas/canvasDebugBridge";
 import { ToolBar } from "../../components/canvas/tools/ToolBar";
 import { SHAPES_NAMES } from "@repo/validation";
 
@@ -19,6 +20,15 @@ export default function DrawPage() {
         <div className="pointer-events-auto">
           <ToolBar selectedShape={selectedShape} setShape={setSelectedShape} />
         </div>
+      </div>
+      <div className="pointer-events-none absolute left-3 top-14 z-20">
+        <button
+          type="button"
+          className="pointer-events-auto rounded border border-amber-500/70 bg-slate-900/95 px-2.5 py-1 text-xs font-medium text-amber-100 shadow-md backdrop-blur-sm hover:bg-slate-800"
+          onClick={() => canvasDebugBridge.moveLastRectPlus20()}
+        >
+          Debug: move last rect +20
+        </button>
       </div>
     </div>
   );
