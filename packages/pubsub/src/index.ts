@@ -1,1 +1,1 @@
-export { disconnectRedis, getRedisClient } from "./client";
+export { publisher, subscriber } from "./client";
