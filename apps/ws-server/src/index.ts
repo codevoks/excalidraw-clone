@@ -109,9 +109,21 @@ wss.on("connection", function connection(ws) {
           if (
             index === -1 ||
             !list[index] ||
-            list[index].type !== op.update.type ||
-            op.baseVersion !== list[index].version
+            list[index].type !== op.update.type
           ) {
+            return;
+          }
+          if (op.baseVersion !== list[index].version) {
+            ws.send(
+              JSON.stringify({
+                kind: "op_rejected",
+                op: OPS_NAMES.UPDATE,
+                id: op.id,
+                reason: "stale_version",
+                serverVersion: list[index].version,
+                shape: list[index],
+              }),
+            );
             return;
           }
           const merged = { ...list[index], ...op.update };
