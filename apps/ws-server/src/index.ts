@@ -2,6 +2,12 @@ import "dotenv/config";
 
 import { WebSocketServer, WebSocket } from "ws";
 import { ShapeType, OpSchema, OPS_NAMES } from "@repo/validation";
+import {
+  getRoomBySlug,
+  createRoomBySlug,
+  getCanvasShapes,
+  saveCanvasState,
+} from "@repo/db";
 
 const wss = new WebSocketServer({ port: 8080 });
 
@@ -64,13 +70,21 @@ wss.on("connection", function connection(ws) {
 
   ws.on("error", console.error);
 
-  ws.on("message", function message(data) {
+  ws.on("message", async function message(data) {
     try {
       const incomingMessage = typeof data === "string" ? data : data.toString();
       console.log("received: %s", incomingMessage);
       const parsedIncomingMessage = JSON.parse(incomingMessage);
       if (parsedIncomingMessage.kind === "join") {
         const roomId = String(parsedIncomingMessage.roomId);
+        let room = await getRoomBySlug(roomId);
+
+        if (!room) {
+          room = await createRoomBySlug(roomId);
+        }
+        if (!storedShapesInRooms.has(roomId)) {
+          storedShapesInRooms.set(roomId, await getCanvasShapes(roomId));
+        }
         removeWsFromMap(ws);
         const peers = roomsToWsMap.get(roomId) ?? new Set<WebSocket>();
         peers.add(ws);
