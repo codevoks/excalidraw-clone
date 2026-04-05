@@ -9,7 +9,10 @@ import { SHAPES_NAMES } from "@repo/validation";
 
 function DrawPageContent() {
   const searchParams = useSearchParams();
-  const roomId = searchParams.get("roomId") ?? "testRoom";
+  const roomId =
+    searchParams.get("room") ??
+    searchParams.get("roomId") ??
+    "testRoom";
   const [selectedShape, setSelectedShape] = useState<SHAPES_NAMES>(
     SHAPES_NAMES.RECTANGLE,
   );

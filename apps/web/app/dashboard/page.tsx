@@ -1,4 +1,4 @@
-import { Button } from "../../components/ui";
+import { DashboardRoomActions } from "../../components/dashboard/dashboard-room-actions";
 import { getSessionUser } from "../../lib/auth";
 
 export default async function DashboardPage() {
@@ -13,16 +13,14 @@ export default async function DashboardPage() {
         Protected route is active. You can now build project-specific business
         logic here.
       </p>
-      <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 text-sm text-[var(--color-foreground)] flex items-center justify-between">
+      <div className="flex flex-col gap-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 text-sm text-[var(--color-foreground)] sm:flex-row sm:items-start sm:justify-between">
         <span>
           Logged in as:{" "}
           <span className="font-medium text-[var(--color-secondary)]">
             {user?.email}
           </span>
         </span>
-        <Button variant="primary" navigateTo="draw">
-          Draw
-        </Button>
+        <DashboardRoomActions />
       </div>
     </section>
   );
