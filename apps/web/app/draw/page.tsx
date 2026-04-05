@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Canvas } from "../../components/canvas/Canvas";
 import { canvasDebugBridge } from "../../components/canvas/canvasDebugBridge";
 import { ToolBar } from "../../components/canvas/tools/ToolBar";
 import { SHAPES_NAMES } from "@repo/validation";
 
-export default function DrawPage() {
+function DrawPageContent() {
   const searchParams = useSearchParams();
   const roomId = searchParams.get("roomId") ?? "testRoom";
   const [selectedShape, setSelectedShape] = useState<SHAPES_NAMES>(
@@ -31,5 +31,17 @@ export default function DrawPage() {
         </button>
       </div>
     </div>
+  );
+}
+
+export default function DrawPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="relative flex min-h-0 flex-1 flex-col bg-slate-950" />
+      }
+    >
+      <DrawPageContent />
+    </Suspense>
   );
 }
